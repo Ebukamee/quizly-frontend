@@ -10,46 +10,32 @@ type Feature = {
 const features: Feature[] = [
   {
     wide: true,
-    title: "Grounded in your content",
+    title: "4 quiz formats — one platform",
     description:
-      "Every question is derived from your document. Every grade comes with a citation. No hallucinations, no off-topic filler — just your material, tested back at you.",
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <polyline points="14,2 14,8 20,8" />
-        <line x1="16" y1="13" x2="8" y2="13" />
-        <line x1="16" y1="17" x2="8" y2="17" />
-      </svg>
-    ),
-  },
-  {
-    wide: false,
-    title: "Any format",
-    description: "PDF, DOCX, TXT, Markdown, or pasted text. If it's words, Quizly can quiz you on it.",
-    icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <rect x="2" y="3" width="20" height="14" rx="2" />
-        <line x1="8" y1="21" x2="16" y2="21" />
-        <line x1="12" y1="17" x2="12" y2="21" />
-      </svg>
-    ),
-  },
-  {
-    wide: false,
-    title: "Instant AI grading",
-    description: "Get your score and detailed feedback the moment you submit — no waiting.",
+      "MCQ, subjective, theory/essay, or maths & calculations. Choose the format that matches your exam style and let AI build the questions directly from your uploaded material.",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="12" cy="12" r="10" />
-        <polyline points="12,6 12,12 16,14" />
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+        <line x1="12" y1="17" x2="12.01" y2="17" />
       </svg>
     ),
   },
   {
-    wide: true,
-    title: "Share with one link",
-    description:
-      "Generated a quiz from your study guide? Share it with your whole class. Works for study groups, teams, and classrooms alike — no sign-up required for takers.",
+    wide: false,
+    title: "Subject organisation",
+    description: "Group your documents into subjects. Keep Biology separate from History. Add as many docs as you need per subject.",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+      </svg>
+    ),
+  },
+  {
+    wide: false,
+    title: "Private or public quizzes",
+    description: "Study alone with a private quiz, or flip it public and share a link with classmates. You control who sees it.",
     icon: (
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="18" cy="5" r="3" />
@@ -57,6 +43,19 @@ const features: Feature[] = [
         <circle cx="18" cy="19" r="3" />
         <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
         <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+      </svg>
+    ),
+  },
+  {
+    wide: true,
+    title: "AI grading grounded in your documents",
+    description:
+      "Every answer is graded against your source material — not a generic knowledge base. You get a score, detailed feedback, and exact citations from your uploaded notes.",
+    icon: (
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+        <polyline points="14,2 14,8 20,8" />
+        <polyline points="9,15 11,17 15,13" />
       </svg>
     ),
   },

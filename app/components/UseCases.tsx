@@ -1,10 +1,10 @@
 import AnimateIn from "./AnimateIn";
 
 const useCases = [
-  { label: "Students", text: "Turn lecture slides into practice exams the night before a test." },
-  { label: "Teachers", text: "Draft quiz questions from lesson plans in seconds, not hours." },
-  { label: "Professionals", text: "Test your team's retention of training documents and SOPs." },
-  { label: "Researchers", text: "Self-test on dense academic papers and retain more of what you read." },
+  { label: "Students", text: "Upload your lecture notes and past papers. Generate MCQ or essay quizzes and study privately before exams." },
+  { label: "Study groups", text: "Create a quiz from shared notes, make it public, and share the link. Everyone practices on the same material." },
+  { label: "Teachers", text: "Turn lesson plans and handouts into graded quizzes. Share with your class and let AI do the marking." },
+  { label: "Self-learners", text: "Reading a textbook or research paper? Upload it, generate questions, and test your understanding instantly." },
 ];
 
 export default function UseCases() {

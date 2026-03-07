@@ -3,18 +3,18 @@ import AnimateIn from "./AnimateIn";
 const steps = [
   {
     n: "1",
-    title: "Upload your document",
-    body: "Drop a PDF, Word doc, or paste raw text. Lecture notes, research papers, training manuals — anything.",
+    title: "Create a subject & add documents",
+    body: "Organise your study material into subjects. Upload your lecture notes, textbooks, or any PDF — as many documents as you need.",
   },
   {
     n: "2",
-    title: "AI writes the questions",
-    body: "Our model reads your content and crafts targeted questions — multiple choice, short answer, or true/false.",
+    title: "Generate a quiz your way",
+    body: "Choose your format — MCQ, subjective, theory/essay, or maths & calculations. AI builds the questions directly from your documents.",
   },
   {
     n: "3",
-    title: "Get graded instantly",
-    body: "Submit your answers and receive AI feedback with direct citations from your original document.",
+    title: "Study privately or share publicly",
+    body: "Take the quiz yourself, or make it public and share a link with classmates. AI grades every answer against your source material.",
   },
 ];
 
@@ -26,13 +26,12 @@ export default function HowItWorks() {
           <div className="mb-16">
             <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-zinc-400">How it works</p>
             <h2 className="max-w-md text-3xl font-bold tracking-tight text-black dark:text-white sm:text-4xl">
-              From document to graded quiz in under a minute
+              From documents to graded quizzes in minutes
             </h2>
           </div>
         </AnimateIn>
 
         <div className="relative grid gap-10 sm:grid-cols-3 sm:gap-6">
-          {/* Dashed connector line (desktop only) */}
           <div className="absolute left-[calc(16.5%+24px)] right-[calc(16.5%+24px)] top-6 hidden border-t border-dashed border-zinc-200 dark:border-zinc-800 sm:block" />
 
           {steps.map((s, i) => (
