@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 const navLinks = [
   { label: "How it Works", href: "/#how-it-works" },
@@ -19,12 +20,24 @@ export default function Navbar() {
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-black dark:bg-white transition-transform duration-200 group-hover:scale-110">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" className="text-white dark:text-black" stroke="currentColor" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="8" />
-              <path d="M15.5 15.5L18 18" />
-            </svg>
-          </div>
+          {/* Light mode logo */}
+          <Image
+            src="/logo.svg"
+            alt="Quizly"
+            width={32}
+            height={32}
+            className="block dark:hidden transition-transform duration-200 group-hover:scale-110"
+            priority
+          />
+          {/* Dark mode logo */}
+          <Image
+            src="/logoDark.svg"
+            alt="Quizly"
+            width={32}
+            height={32}
+            className="hidden dark:block transition-transform duration-200 group-hover:scale-110"
+            priority
+          />
           <span className="text-lg font-bold tracking-tight text-black dark:text-white">
             Quizly
           </span>
@@ -54,14 +67,9 @@ export default function Navbar() {
           </Link>
           <Link
             href="/upload"
-            className="inline-flex h-9 items-center gap-1.5 rounded-full bg-black px-5 text-sm font-semibold text-white transition-all duration-200 hover:bg-zinc-800 active:scale-[0.97] dark:bg-white dark:text-black dark:hover:bg-zinc-100"
+            className="inline-flex h-9 items-center rounded-full bg-black px-5 text-sm font-semibold text-white transition-all duration-200 hover:bg-zinc-800 active:scale-[0.97] dark:bg-white dark:text-black dark:hover:bg-zinc-100"
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="17,8 12,3 7,8" />
-              <line x1="12" y1="3" x2="12" y2="15" />
-            </svg>
-            Upload a Doc
+            Get Started
           </Link>
         </div>
 
@@ -113,14 +121,9 @@ export default function Navbar() {
             <Link
               href="/upload"
               onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-center gap-2 rounded-full bg-black py-2.5 text-sm font-semibold text-white dark:bg-white dark:text-black"
+              className="flex items-center justify-center rounded-full bg-black py-2.5 text-sm font-semibold text-white dark:bg-white dark:text-black"
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                <polyline points="17,8 12,3 7,8" />
-                <line x1="12" y1="3" x2="12" y2="15" />
-              </svg>
-              Upload a Doc
+              Get Started
             </Link>
           </div>
         </div>
