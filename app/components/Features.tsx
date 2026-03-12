@@ -77,7 +77,7 @@ export default function Features() {
             <AnimateIn
               key={f.title}
               delay={i * 80}
-              className={`flex flex-col justify-between rounded-2xl border border-zinc-200 p-7 dark:border-zinc-800 ${f.wide ? "sm:col-span-2" : ""}`}
+              className={`card-hover flex flex-col justify-between rounded-2xl border border-zinc-200 p-7 dark:border-zinc-800 ${f.wide ? "sm:col-span-2" : ""}`}
             >
               <div className="mb-6 flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 text-black dark:border-zinc-800 dark:text-white">
                 {f.icon}

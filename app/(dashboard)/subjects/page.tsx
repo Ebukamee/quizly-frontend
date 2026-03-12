@@ -58,7 +58,7 @@ export default function SubjectsPage() {
           <Link
             key={s.id}
             href={`/subjects/${s.id}`}
-            className="group flex flex-col rounded-xl border border-zinc-200 bg-white p-5 transition-all hover:border-zinc-400 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-600"
+            className="card-hover group flex flex-col rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900"
           >
             <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-200 text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
               <HugeiconsIcon icon={BookOpen01Icon} size={16} />

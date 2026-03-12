@@ -43,7 +43,7 @@ export default function DashboardPage() {
         {statCards.map((s) => (
           <div
             key={s.label}
-            className="rounded-xl border border-zinc-200 bg-white p-3 sm:p-4 dark:border-zinc-800 dark:bg-zinc-900"
+            className="card-hover rounded-xl border border-zinc-200 bg-white p-3 sm:p-4 dark:border-zinc-800 dark:bg-zinc-900"
           >
             <div className="mb-2 flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-200 text-zinc-500 sm:mb-3 sm:h-8 sm:w-8 dark:border-zinc-700 dark:text-zinc-400">
               <HugeiconsIcon icon={s.icon} size={15} />
@@ -73,7 +73,7 @@ export default function DashboardPage() {
             <Link
               key={a.id}
               href={`/attempts/${a.id}`}
-              className="flex items-center justify-between px-4 py-3 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50"
+              className="flex items-center justify-between px-4 py-3 transition-all duration-150 hover:bg-zinc-50 hover:pl-5 dark:hover:bg-zinc-800/50"
             >
               <div className="min-w-0">
                 <p className="truncate text-sm font-medium text-black dark:text-white">{a.quizTitle}</p>

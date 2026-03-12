@@ -60,10 +60,10 @@ export default function Sidebar({ open, onClose, isCollapsed }: Props) {
                 key={item.href}
                 href={item.href}
                 onClick={onClose}
-                className={`group flex items-center rounded-lg py-2 text-[14px] font-medium transition-all ${isCollapsed ? "justify-center px-0" : "gap-3 px-3"
+                className={`group flex items-center rounded-lg py-2 text-[14px] font-medium transition-all duration-150 ${isCollapsed ? "justify-center px-0" : "gap-3 px-3"
                   } ${active
-                    ? "bg-black/[0.04] text-black dark:bg-white/[0.08] dark:text-white"
-                    : "text-zinc-500 hover:bg-black/[0.02] hover:text-black dark:text-zinc-400 dark:hover:bg-white/[0.02] dark:hover:text-white"
+                    ? "bg-black/[0.06] text-black dark:bg-white/[0.1] dark:text-white"
+                    : "text-zinc-500 hover:bg-black/[0.04] hover:text-black dark:text-zinc-400 dark:hover:bg-white/[0.04] dark:hover:text-white"
                   }`}
               >
                 <HugeiconsIcon

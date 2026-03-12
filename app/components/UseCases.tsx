@@ -20,7 +20,7 @@ export default function UseCases() {
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {useCases.map((u, i) => (
-            <AnimateIn key={u.label} delay={i * 80} className="rounded-2xl border border-zinc-200 p-6 dark:border-zinc-800">
+            <AnimateIn key={u.label} delay={i * 80} className="card-hover rounded-2xl border border-zinc-200 p-6 dark:border-zinc-800">
               <p className="mb-3 text-xs font-bold uppercase tracking-widest text-black dark:text-white">{u.label}</p>
               <p className="font-body text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{u.text}</p>
             </AnimateIn>

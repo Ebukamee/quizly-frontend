@@ -9,34 +9,7 @@ export default function Hero() {
         <div className="grid items-center gap-14 lg:grid-cols-2">
 
           {/* Left: Copy */}
-          <div className="relative">
-
-            {/* Floating bubble 1 — top right, above h1 */}
-            <div
-              className="animate-fade-in absolute -right-2 top-0 hidden rotate-2 items-center gap-2 rounded-2xl rounded-tr-sm border border-zinc-200 bg-white px-3.5 py-2 shadow-md lg:flex dark:border-zinc-800 dark:bg-zinc-900"
-              style={{ animationDelay: "600ms" }}
-            >
-              <span className="text-sm">📄</span>
-              <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Biology.pdf uploaded</span>
-            </div>
-
-            {/* Floating bubble 2 — mid left, beside description */}
-            <div
-              className="animate-fade-in absolute -left-10 top-[52%] hidden -rotate-1 items-center gap-2 rounded-2xl rounded-tl-sm bg-black px-3.5 py-2 shadow-md lg:flex dark:bg-white"
-              style={{ animationDelay: "750ms" }}
-            >
-              <HugeiconsIcon icon={SparklesIcon} size={12} className="shrink-0 text-white dark:text-black" />
-              <span className="text-xs font-medium text-white dark:text-black">10 questions ready</span>
-            </div>
-
-            {/* Floating bubble 3 — bottom right, near CTAs */}
-            <div
-              className="animate-fade-in absolute -right-4 bottom-12 hidden rotate-1 items-center gap-2 rounded-2xl rounded-br-sm border border-zinc-200 bg-white px-3.5 py-2 shadow-md lg:flex dark:border-zinc-800 dark:bg-zinc-900"
-              style={{ animationDelay: "900ms" }}
-            >
-              <span className="text-sm">🎉</span>
-              <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Score: <strong className="text-black dark:text-white">9/10</strong></span>
-            </div>
+          <div>
 
             <span
               className="animate-fade-up inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-medium text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400"

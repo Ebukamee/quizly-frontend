@@ -1,7 +1,26 @@
+'use client';
+
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
+import { signIn } from "@/lib/auth-client";
+
 
 export default function LoginPage() {
+  const [isLoading, setIsLoading] = useState(false);
+  const handleGoogleLogin = async () => {
+    setIsLoading(true);
+    try {
+      await signIn.social({
+        provider: "google",
+        // This is where Next.js will take them AFTER a successful login
+        callbackURL: "http://localhost:3000/dashboard",
+      });
+    } catch (error) {
+      console.error("Login failed:", error);
+      setIsLoading(false);
+    }
+  };
   return (
     <div className="flex min-h-screen flex-col bg-zinc-50 dark:bg-zinc-950">
 
@@ -48,6 +67,7 @@ export default function LoginPage() {
             {/* Google button */}
             <button
               type="button"
+              onClick={handleGoogleLogin}
               className="flex w-full items-center justify-center gap-3 rounded-full border border-zinc-200 bg-white px-5 py-3 text-sm font-semibold text-zinc-800 shadow-sm transition-all hover:bg-zinc-50 hover:border-zinc-300 active:scale-[0.98] dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800 dark:hover:border-zinc-600"
             >
               {/* Google G logo */}
@@ -69,7 +89,7 @@ export default function LoginPage() {
                   fill="#EA4335"
                 />
               </svg>
-              Continue with Google
+              {isLoading ? "Redirecting..." : "Continue with Google"}
             </button>
 
           </div>
@@ -82,7 +102,7 @@ export default function LoginPage() {
             </Link>{" "}
             and{" "}
             <Link href="/privacy" className="underline underline-offset-2 hover:text-black dark:hover:text-white">
-              Privacy Policy
+              Privacy Polic
             </Link>.
           </p>
         </div>

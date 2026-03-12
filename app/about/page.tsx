@@ -97,7 +97,7 @@ export default function AboutPage() {
               <AnimateIn
                 key={v.title}
                 delay={i * 80}
-                className="rounded-2xl border border-zinc-200 p-6 dark:border-zinc-800"
+                className="card-hover rounded-2xl border border-zinc-200 p-6 dark:border-zinc-800"
               >
                 <h3 className="mb-2 font-display font-semibold text-black dark:text-white">{v.title}</h3>
                 <p className="font-body text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{v.body}</p>
@@ -122,7 +122,7 @@ export default function AboutPage() {
               <AnimateIn
                 key={member.name}
                 delay={i * 80}
-                className="rounded-2xl border border-zinc-200 p-6 dark:border-zinc-800"
+                className="card-hover rounded-2xl border border-zinc-200 p-6 dark:border-zinc-800"
               >
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-black font-display text-sm font-bold text-white dark:bg-white dark:text-black">
                   {member.initials}
