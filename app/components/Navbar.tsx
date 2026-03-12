@@ -5,8 +5,8 @@ import Link from "next/link";
 import Image from "next/image";
 
 const navLinks = [
+  { label: 'Home', href: '/' },
   { label: "How it Works", href: "/#how-it-works" },
-  { label: "My Quizzes", href: "/quizzes" },
   { label: "Pricing", href: "/pricing" },
   { label: "About", href: "/about" },
 ];
@@ -38,7 +38,7 @@ export default function Navbar() {
             className="hidden dark:block transition-transform duration-200 group-hover:scale-110"
             priority
           />
-          <span className="text-lg font-bold tracking-tight text-black dark:text-white">
+          <span className="font-heading text-lg font-bold tracking-tight text-black dark:text-white">
             Quizly
           </span>
         </Link>

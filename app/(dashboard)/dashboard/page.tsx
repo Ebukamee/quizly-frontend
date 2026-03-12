@@ -43,19 +43,19 @@ export default function DashboardPage() {
         {statCards.map((s) => (
           <div
             key={s.label}
-            className="rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900"
+            className="rounded-xl border border-zinc-200 bg-white p-3 sm:p-4 dark:border-zinc-800 dark:bg-zinc-900"
           >
-            <div className="mb-3 flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-200 text-zinc-500 dark:border-zinc-700 dark:text-zinc-400">
+            <div className="mb-2 flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-200 text-zinc-500 sm:mb-3 sm:h-8 sm:w-8 dark:border-zinc-700 dark:text-zinc-400">
               <HugeiconsIcon icon={s.icon} size={15} />
             </div>
-            <p className="font-display text-2xl font-bold text-black dark:text-white">{s.value}</p>
-            <p className="mt-0.5 text-xs text-zinc-500">{s.label}</p>
+            <p className="font-display text-xl font-bold text-black sm:text-2xl dark:text-white">{s.value}</p>
+            <p className="mt-0.5 text-[11px] text-zinc-500 sm:text-xs">{s.label}</p>
           </div>
         ))}
       </div>
 
       {/* Charts row */}
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2">
         <BarChart data={barChartData} title="Quiz activity — last 7 days" />
         <DonutChart segments={donutData} title="Format breakdown" />
       </div>

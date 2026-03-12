@@ -27,7 +27,7 @@ export default function SubjectsPage() {
       </div>
 
       {showForm && (
-        <div className="mb-5 flex items-center gap-3 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="mb-5 flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4 sm:flex-row sm:items-center dark:border-zinc-800 dark:bg-zinc-900">
           <input
             autoFocus
             type="text"
@@ -36,18 +36,20 @@ export default function SubjectsPage() {
             placeholder="Subject name…"
             className="flex-1 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-black outline-none focus:border-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:focus:border-white"
           />
-          <button
-            onClick={() => { setShowForm(false); setNewName(""); }}
-            className="h-9 rounded-full bg-black px-4 text-sm font-semibold text-white hover:bg-zinc-800 dark:bg-white dark:text-black dark:hover:bg-zinc-100"
-          >
-            Create
-          </button>
-          <button
-            onClick={() => { setShowForm(false); setNewName(""); }}
-            className="h-9 rounded-full border border-zinc-200 px-4 text-sm text-zinc-600 hover:border-zinc-400 dark:border-zinc-700 dark:text-zinc-400"
-          >
-            Cancel
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => { setShowForm(false); setNewName(""); }}
+              className="h-9 flex-1 rounded-full bg-black px-4 text-sm font-semibold text-white hover:bg-zinc-800 sm:flex-none dark:bg-white dark:text-black dark:hover:bg-zinc-100"
+            >
+              Create
+            </button>
+            <button
+              onClick={() => { setShowForm(false); setNewName(""); }}
+              className="h-9 flex-1 rounded-full border border-zinc-200 px-4 text-sm text-zinc-600 hover:border-zinc-400 sm:flex-none dark:border-zinc-700 dark:text-zinc-400"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
 

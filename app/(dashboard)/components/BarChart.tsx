@@ -1,3 +1,18 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Tooltip,
+  Filler,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Filler);
+
 type DataPoint = { label: string; value: number };
 
 type Props = {
@@ -5,48 +20,101 @@ type Props = {
   title?: string;
 };
 
+const barColors = [
+  "#6366f1", // indigo
+  "#8b5cf6", // violet
+  "#ec4899", // pink
+  "#f43f5e", // rose
+  "#f97316", // orange
+  "#eab308", // yellow
+  "#22c55e", // green
+];
+
 export default function BarChart({ data, title }: Props) {
-  const max = Math.max(...data.map((d) => d.value));
-  const W = 420;
-  const H = 160;
-  const paddingLeft = 24;
-  const paddingBottom = 28;
-  const paddingTop = 12;
-  const chartW = W - paddingLeft - 8;
-  const chartH = H - paddingBottom - paddingTop;
-  const barW = Math.floor(chartW / data.length) - 6;
+  const [dark, setDark] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    setDark(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setDark(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
+  const chartData = {
+    labels: data.map((d) => d.label),
+    datasets: [
+      {
+        data: data.map((d) => d.value),
+        backgroundColor: data.map((_, i) => barColors[i % barColors.length]),
+        hoverBackgroundColor: data.map((_, i) => barColors[i % barColors.length] + "cc"),
+        borderRadius: 3,
+        borderSkipped: false as const,
+        barPercentage: 0.65,
+        categoryPercentage: 0.75,
+      },
+    ],
+  };
+
+  const options = {
+    responsive: true,
+    maintainAspectRatio: false,
+    animation: { duration: 600, easing: "easeOutQuart" as const },
+    plugins: {
+      tooltip: {
+        backgroundColor: dark ? "#27272a" : "#18181b",
+        titleColor: "#fff",
+        bodyColor: "#a1a1aa",
+        borderColor: dark ? "#3f3f46" : "#27272a",
+        borderWidth: 1,
+        cornerRadius: 6,
+        padding: 10,
+        titleFont: { size: 12, weight: 600 as const },
+        bodyFont: { size: 11 },
+        displayColors: true,
+        boxWidth: 8,
+        boxHeight: 8,
+        usePointStyle: true,
+        callbacks: {
+          title: (items: { label: string }[]) => items[0]?.label ?? "",
+          label: (item: { raw: unknown }) => ` ${item.raw} quizzes`,
+        },
+      },
+    },
+    scales: {
+      x: {
+        border: { display: false },
+        grid: { display: false },
+        ticks: {
+          color: "#a1a1aa",
+          font: { size: 11 },
+          padding: 4,
+        },
+      },
+      y: {
+        border: { display: false },
+        grid: {
+          color: dark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.06)",
+        },
+        ticks: {
+          color: "#a1a1aa",
+          font: { size: 10 },
+          padding: 8,
+          stepSize: 2,
+        },
+        beginAtZero: true,
+      },
+    },
+  };
 
   return (
-    <div className="rounded-xl border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
+    <div className="rounded-lg border border-zinc-200 bg-white p-5 dark:border-zinc-800 dark:bg-zinc-900">
       {title && (
         <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-zinc-400">{title}</p>
       )}
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" className="overflow-visible">
-        {[0, 0.25, 0.5, 0.75, 1].map((ratio) => {
-          const y = paddingTop + chartH * (1 - ratio);
-          return (
-            <g key={ratio}>
-              <line x1={paddingLeft} y1={y} x2={W - 8} y2={y} stroke="currentColor" strokeOpacity={0.08} strokeWidth={1} />
-              <text x={paddingLeft - 4} y={y + 4} textAnchor="end" fontSize={9} fill="currentColor" opacity={0.35}>
-                {Math.round(max * ratio)}
-              </text>
-            </g>
-          );
-        })}
-        {data.map((d, i) => {
-          const barH = max > 0 ? (d.value / max) * chartH : 0;
-          const x = paddingLeft + (chartW / data.length) * i + 3;
-          const y = paddingTop + chartH - barH;
-          return (
-            <g key={d.label}>
-              <rect x={x} y={y} width={barW} height={barH} rx={3} className="fill-black dark:fill-white" opacity={0.85} />
-              <text x={x + barW / 2} y={H - 6} textAnchor="middle" fontSize={9} fill="currentColor" opacity={0.45}>
-                {d.label}
-              </text>
-            </g>
-          );
-        })}
-      </svg>
+      <div className="h-[180px]">
+        <Bar data={chartData} options={options} />
+      </div>
     </div>
   );
 }

@@ -13,7 +13,7 @@ export default function UseCases() {
       <div className="mx-auto max-w-5xl">
         <AnimateIn className="mb-16">
           <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-zinc-400">Use cases</p>
-          <h2 className="max-w-sm text-3xl font-bold tracking-tight text-black dark:text-white sm:text-4xl">
+          <h2 className="max-w-sm font-display text-3xl font-bold tracking-tight text-black dark:text-white sm:text-4xl">
             Who is it for?
           </h2>
         </AnimateIn>
@@ -22,7 +22,7 @@ export default function UseCases() {
           {useCases.map((u, i) => (
             <AnimateIn key={u.label} delay={i * 80} className="rounded-2xl border border-zinc-200 p-6 dark:border-zinc-800">
               <p className="mb-3 text-xs font-bold uppercase tracking-widest text-black dark:text-white">{u.label}</p>
-              <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{u.text}</p>
+              <p className="font-body text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{u.text}</p>
             </AnimateIn>
           ))}
         </div>

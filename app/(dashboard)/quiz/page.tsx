@@ -41,7 +41,7 @@ export default function QuizPage() {
             <Link
               key={q.id}
               href={`/quiz/${q.id}`}
-              className="group flex h-[160px] flex-col justify-between rounded-xl border border-zinc-200 bg-white p-5 transition-all hover:border-zinc-400 hover:shadow-sm dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-600"
+              className="group flex h-[140px] flex-col justify-between rounded-xl border border-zinc-200 bg-white p-4 transition-all hover:border-zinc-400 hover:shadow-sm sm:h-[160px] sm:p-5 dark:border-zinc-800 dark:bg-zinc-900 dark:hover:border-zinc-600"
             >
               <div>
                 <h3 className="font-display text-base font-bold text-black dark:text-white">{q.title}</h3>

@@ -79,11 +79,11 @@ export default function TakeQuizPage() {
         <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
           Question {current + 1} of {quiz.questions.length}
         </p>
-        <div className="flex gap-1">
+        <div className="flex max-w-[50%] flex-wrap gap-1 sm:max-w-none sm:flex-nowrap">
           {quiz.questions.map((_, i) => (
             <div
               key={i}
-              className={`h-1 w-5 rounded-full transition-colors ${i <= current ? "bg-black dark:bg-white" : "bg-zinc-200 dark:bg-zinc-800"}`}
+              className={`h-1 w-3 rounded-full transition-colors sm:w-5 ${i <= current ? "bg-black dark:bg-white" : "bg-zinc-200 dark:bg-zinc-800"}`}
             />
           ))}
         </div>
@@ -96,7 +96,7 @@ export default function TakeQuizPage() {
       </div>
 
       {/* Question card */}
-      <div className="rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+      <div className="rounded-xl border border-zinc-200 bg-white p-4 sm:p-6 dark:border-zinc-800 dark:bg-zinc-900">
         <div className="mb-4 flex gap-2">
           <span className="rounded-md border border-zinc-200 bg-zinc-50 px-2.5 py-0.5 text-xs text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800">
             {quiz.subjectName}
@@ -208,7 +208,7 @@ export default function TakeQuizPage() {
         <button
           onClick={() => setCurrent((c) => Math.max(0, c - 1))}
           disabled={current === 0}
-          className="inline-flex h-10 items-center gap-2 rounded-full border border-zinc-200 px-5 text-sm font-semibold text-zinc-700 transition-colors hover:border-zinc-400 disabled:pointer-events-none disabled:opacity-30 dark:border-zinc-700 dark:text-zinc-300"
+          className="inline-flex h-10 items-center gap-1.5 rounded-full border border-zinc-200 px-3 text-sm font-semibold text-zinc-700 transition-colors hover:border-zinc-400 disabled:pointer-events-none disabled:opacity-30 sm:gap-2 sm:px-5 dark:border-zinc-700 dark:text-zinc-300"
         >
           <HugeiconsIcon icon={ArrowLeft01Icon} size={13} />
           Back
@@ -217,7 +217,7 @@ export default function TakeQuizPage() {
         <button
           onClick={handleNext}
           disabled={!canProceed}
-          className="inline-flex h-10 items-center gap-2 rounded-full bg-black px-6 text-sm font-semibold text-white transition-all hover:bg-zinc-800 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-30 dark:bg-white dark:text-black dark:hover:bg-zinc-100"
+          className="inline-flex h-10 items-center gap-1.5 rounded-full bg-black px-4 text-sm font-semibold text-white transition-all hover:bg-zinc-800 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-30 sm:gap-2 sm:px-6 dark:bg-white dark:text-black dark:hover:bg-zinc-100"
         >
           {isLast ? "Submit Quiz" : "Next"}
           {!isLast && <HugeiconsIcon icon={ArrowRight01Icon} size={13} />}

@@ -23,7 +23,7 @@ export default function CreateQuizModal({ isOpen, onClose }: Props) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative w-full max-w-md rounded-xl border border-zinc-200 bg-white p-7 shadow-2xl dark:border-zinc-800 dark:bg-zinc-950">
+      <div className="relative w-full max-w-md rounded-xl border border-zinc-200 bg-white p-5 shadow-2xl sm:p-7 dark:border-zinc-800 dark:bg-zinc-950">
         <div className="mb-6 flex items-start justify-between">
           <div>
             <h2 className="font-display text-lg font-bold text-black dark:text-white">Create a Quiz</h2>

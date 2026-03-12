@@ -50,13 +50,13 @@ export default async function AttemptDetailPage({ params }: { params: Promise<{ 
       </Link>
 
       {/* Score card */}
-      <div className="mb-6 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="flex items-center gap-6">
-          <div className={`flex h-20 w-20 shrink-0 items-center justify-center rounded-xl font-display text-2xl font-bold ${scorePill(attempt.score)}`}>
+      <div className="mb-6 rounded-xl border border-zinc-200 bg-white p-4 sm:p-6 dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6">
+          <div className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-xl font-display text-xl font-bold sm:h-20 sm:w-20 sm:text-2xl ${scorePill(attempt.score)}`}>
             {attempt.score}%
           </div>
           <div>
-            <h2 className="font-display text-lg font-bold text-black dark:text-white">{attempt.quizTitle}</h2>
+            <h2 className="font-display text-base font-bold text-black sm:text-lg dark:text-white">{attempt.quizTitle}</h2>
             <p className="mt-0.5 text-sm text-zinc-500">{attempt.subjectName} · {attempt.format}</p>
             <p className="mt-0.5 text-xs text-zinc-400">{attempt.date}</p>
             <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
@@ -85,7 +85,7 @@ export default async function AttemptDetailPage({ params }: { params: Promise<{ 
             : q.isCorrect ? "border-green-200 dark:border-green-900" : "border-red-200 dark:border-red-900";
 
           return (
-            <div key={q.questionId} className={`rounded-xl border bg-white p-5 dark:bg-zinc-900 ${borderColor}`}>
+            <div key={q.questionId} className={`rounded-xl border bg-white p-4 sm:p-5 dark:bg-zinc-900 ${borderColor}`}>
               <div className="mb-3 flex items-start justify-between gap-3">
                 <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">Q{i + 1}</p>
                 {hasMarks ? (

@@ -23,16 +23,26 @@ function getTitle(pathname: string): string {
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
   const title = getTitle(pathname);
 
   return (
-    <div className="flex min-h-screen bg-zinc-50 dark:bg-zinc-950">
-      <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+    <div className="flex min-h-screen bg-[#fafafa] font-sans text-black antialiased selection:bg-black selection:text-white dark:bg-black dark:text-white dark:selection:bg-white dark:selection:text-black">
+      <Sidebar
+        open={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+        isCollapsed={isCollapsed}
+      />
 
-      <div className="flex min-h-screen flex-1 flex-col lg:ml-60">
-        <DashHeader title={title} onMenuClick={() => setSidebarOpen(true)} />
-        <main className="flex-1 overflow-y-auto p-5 lg:p-6">
+      <div className={`flex min-h-screen flex-1 flex-col transition-all duration-300 ${isCollapsed ? "lg:ml-16" : "lg:ml-64"}`}>
+        <DashHeader
+          title={title}
+          onMenuClick={() => setSidebarOpen(true)}
+          isCollapsed={isCollapsed}
+          onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
+        />
+        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-10">
           {children}
         </main>
       </div>

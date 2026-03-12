@@ -6,10 +6,10 @@ export default function CTA() {
     <section className="px-6 py-6">
       <AnimateIn className="mx-auto max-w-5xl overflow-hidden rounded-3xl bg-black px-8 py-20 text-center dark:border dark:border-zinc-800 dark:bg-zinc-950">
         <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-zinc-500">Get started</p>
-        <h2 className="mx-auto max-w-xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
+        <h2 className="mx-auto max-w-xl font-display text-3xl font-bold tracking-tight text-white sm:text-4xl">
           Your document. Your quiz. Ready in seconds.
         </h2>
-        <p className="mx-auto mt-4 max-w-md text-zinc-400">
+        <p className="mx-auto mt-4 max-w-md font-body text-zinc-400">
           No flashcards to make. No question banks to browse. Just upload and learn.
         </p>
         <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">

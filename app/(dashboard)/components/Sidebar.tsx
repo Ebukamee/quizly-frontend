@@ -9,7 +9,6 @@ import {
   Quiz01Icon,
   BookOpen01Icon,
   ChartLineData01Icon,
-  ArrowLeft01Icon,
 } from "@hugeicons/core-free-icons";
 
 const navItems = [
@@ -22,9 +21,10 @@ const navItems = [
 type Props = {
   open: boolean;
   onClose: () => void;
+  isCollapsed: boolean;
 };
 
-export default function Sidebar({ open, onClose }: Props) {
+export default function Sidebar({ open, onClose, isCollapsed }: Props) {
   const pathname = usePathname();
 
   return (
@@ -32,28 +32,27 @@ export default function Sidebar({ open, onClose }: Props) {
       {/* Mobile backdrop */}
       {open && (
         <div
-          className="fixed inset-0 z-20 bg-black/40 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-20 bg-black/20 backdrop-blur-sm lg:hidden"
           onClick={onClose}
         />
       )}
 
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-30 flex w-60 flex-col border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-black transition-transform duration-200 lg:translate-x-0 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-30 flex flex-col border-r border-black/[0.06] bg-white transition-all duration-300 dark:border-white/[0.06] dark:bg-[#0a0a0a] lg:translate-x-0 ${isCollapsed ? "w-16" : "w-64"
+          } ${open ? "translate-x-0" : "-translate-x-full"}`}
       >
         {/* Logo */}
-        <div className="flex h-14 shrink-0 items-center gap-2.5 border-b border-zinc-200 px-5 dark:border-zinc-800">
-          <Link href="/" className="flex items-center gap-2.5 group" onClick={onClose}>
-            <Image src="/logo.svg" alt="Quizly" width={22} height={22} className="block dark:hidden" />
-            <Image src="/logoDark.svg" alt="Quizly" width={22} height={22} className="hidden dark:block" />
-            <span className="font-display text-sm font-bold tracking-tight text-black dark:text-white">Quizly</span>
+        <div className={`flex h-16 shrink-0 items-center overflow-hidden ${isCollapsed ? "justify-center px-0" : "px-6"}`}>
+          <Link href="/" className="group flex items-center gap-3" onClick={onClose}>
+            <Image src="/logo.svg" alt="Quizly" width={20} height={20} className="block shrink-0 transition-transform group-hover:scale-105 dark:hidden" />
+            <Image src="/logoDark.svg" alt="Quizly" width={20} height={20} className="hidden shrink-0 transition-transform group-hover:scale-105 dark:block" />
+            {!isCollapsed && <span className="font-heading text-[15px] font-bold tracking-tight text-black dark:text-white">Quizly</span>}
           </Link>
         </div>
 
         {/* Nav */}
-        <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-3">
+        <nav className="flex flex-1 flex-col gap-0.5 overflow-y-auto px-3 py-4">
           {navItems.map((item) => {
             const active = pathname === item.href || pathname.startsWith(item.href + "/");
             return (
@@ -61,27 +60,30 @@ export default function Sidebar({ open, onClose }: Props) {
                 key={item.href}
                 href={item.href}
                 onClick={onClose}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${
-                  active
-                    ? "bg-zinc-100 font-semibold text-black dark:bg-zinc-900 dark:text-white"
-                    : "text-zinc-500 hover:bg-zinc-50 hover:text-black dark:hover:bg-zinc-900 dark:hover:text-white"
-                }`}
+                className={`group flex items-center rounded-lg py-2 text-[14px] font-medium transition-all ${isCollapsed ? "justify-center px-0" : "gap-3 px-3"
+                  } ${active
+                    ? "bg-black/[0.04] text-black dark:bg-white/[0.08] dark:text-white"
+                    : "text-zinc-500 hover:bg-black/[0.02] hover:text-black dark:text-zinc-400 dark:hover:bg-white/[0.02] dark:hover:text-white"
+                  }`}
               >
-                <HugeiconsIcon icon={item.icon} size={16} />
-                {item.label}
+                <HugeiconsIcon
+                  icon={item.icon}
+                  size={18}
+                  className={`shrink-0 transition-colors ${active ? "text-black dark:text-white" : "text-zinc-400 group-hover:text-black dark:group-hover:text-white"}`}
+                />
+                {!isCollapsed && <span className="truncate">{item.label}</span>}
               </Link>
             );
           })}
         </nav>
 
         {/* Bottom: back to site */}
-        <div className="shrink-0 border-t border-zinc-200 p-3 dark:border-zinc-800">
+        <div className="shrink-0 border-t border-black/[0.06] p-3 dark:border-white/[0.06]">
           <Link
             href="/"
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-zinc-400 transition-colors hover:text-zinc-600 dark:hover:text-zinc-300"
+            className={`group flex items-center rounded-lg py-2 text-[13px] font-medium text-zinc-400 transition-all hover:text-black dark:hover:text-white ${isCollapsed ? "justify-center px-0" : "gap-3 px-3"}`}
           >
-            <HugeiconsIcon icon={ArrowLeft01Icon} size={13} />
-            Back to site
+            {isCollapsed ? "←" : "← Back to site"}
           </Link>
         </div>
       </aside>

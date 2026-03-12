@@ -27,7 +27,7 @@ export default function LoginPage() {
               className="hidden dark:block transition-transform duration-200 group-hover:scale-110"
               priority
             />
-            <span className="text-base font-bold tracking-tight text-black dark:text-white">
+            <span className="font-heading text-base font-bold tracking-tight text-black dark:text-white">
               Quizly
             </span>
           </Link>
@@ -37,7 +37,7 @@ export default function LoginPage() {
 
             {/* Heading */}
             <div className="mb-8 text-center">
-              <h1 className="text-2xl font-bold tracking-tight text-black dark:text-white">
+              <h1 className="font-display text-2xl font-bold tracking-tight text-black dark:text-white">
                 Welcome to Quizly
               </h1>
               <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">

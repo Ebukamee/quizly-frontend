@@ -25,7 +25,7 @@ export default function HowItWorks() {
         <AnimateIn>
           <div className="mb-16">
             <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-zinc-400">How it works</p>
-            <h2 className="max-w-md text-3xl font-bold tracking-tight text-black dark:text-white sm:text-4xl">
+            <h2 className="max-w-md font-display text-3xl font-bold tracking-tight text-black dark:text-white sm:text-4xl">
               From documents to graded quizzes in minutes
             </h2>
           </div>
@@ -40,8 +40,8 @@ export default function HowItWorks() {
                 {s.n}
               </div>
               <div>
-                <h3 className="mb-2 font-semibold text-black dark:text-white">{s.title}</h3>
-                <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{s.body}</p>
+                <h3 className="mb-2 font-display font-semibold text-black dark:text-white">{s.title}</h3>
+                <p className="font-body text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{s.body}</p>
               </div>
             </AnimateIn>
           ))}

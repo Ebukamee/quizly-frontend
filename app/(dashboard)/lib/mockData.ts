@@ -380,7 +380,7 @@ export const attempts: Attempt[] = [
         userAnswer: "$f'(x) = 3x^2 - 8x + 7$",
         correctWorkings: "Apply the power rule to each term: $\\frac{d}{dx}(ax^n) = nax^{n-1}$",
         correctAnswer: "$f'(x) = 3x^2 - 8x + 7$",
-        isCorrect: true, marksAwarded: 5, totalMarks: 5,
+        isCorrect: true, marksAwarded: 4, totalMarks: 5,
       },
       {
         questionId: "q1-2", questionText: "Using the chain rule, differentiate $g(x) = \\sin(x^2 + 1)$.",
@@ -607,10 +607,10 @@ export const barChartData = [
 ];
 
 export const donutData = [
-  { label: "Maths", value: 35, color: "#18181b" },
-  { label: "MCQ", value: 28, color: "#71717a" },
-  { label: "Essay", value: 22, color: "#a1a1aa" },
-  { label: "Subjective", value: 15, color: "#d4d4d8" },
+  { label: "Maths", value: 35, color: "#6366f1" },
+  { label: "MCQ", value: 28, color: "#ec4899" },
+  { label: "Essay", value: 22, color: "#f97316" },
+  { label: "Subjective", value: 15, color: "#22c55e" },
 ];
 
 // ─── Stat cards ───────────────────────────────────────────────────────────────

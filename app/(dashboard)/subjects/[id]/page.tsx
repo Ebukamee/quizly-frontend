@@ -37,9 +37,9 @@ export default function SubjectDetailPage() {
           <h1 className="font-display text-xl font-bold text-black dark:text-white">{subject.name}</h1>
           <p className="mt-0.5 text-sm text-zinc-500">{docs.length} documents uploaded</p>
         </div>
-        <button className="inline-flex h-10 items-center gap-2 rounded-full border border-zinc-200 px-5 text-sm font-semibold text-black transition-all hover:border-zinc-400 dark:border-zinc-700 dark:text-white dark:hover:border-zinc-500">
+        <button className="inline-flex h-9 items-center gap-2 rounded-full border border-zinc-200 px-3 text-sm font-semibold text-black transition-all hover:border-zinc-400 sm:h-10 sm:px-5 dark:border-zinc-700 dark:text-white dark:hover:border-zinc-500">
           <HugeiconsIcon icon={Upload01Icon} size={13} />
-          Upload
+          <span className="hidden sm:inline">Upload</span>
         </button>
       </div>
 
@@ -47,7 +47,7 @@ export default function SubjectDetailPage() {
         onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
         onDragLeave={() => setIsDragging(false)}
         onDrop={(e) => { e.preventDefault(); setIsDragging(false); }}
-        className={`mb-5 flex flex-col items-center justify-center rounded-xl border-2 border-dashed py-10 transition-colors ${
+        className={`mb-5 flex flex-col items-center justify-center rounded-xl border-2 border-dashed py-6 sm:py-10 transition-colors ${
           isDragging
             ? "border-black bg-zinc-50 dark:border-white dark:bg-zinc-900"
             : "border-zinc-200 dark:border-zinc-800"

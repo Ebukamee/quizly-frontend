@@ -32,7 +32,7 @@ export default function AttemptsPage() {
             <li key={a.id}>
               <Link
                 href={`/attempts/${a.id}`}
-                className="flex items-center justify-between px-5 py-4 transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-800/50 sm:grid sm:grid-cols-[1fr_auto_auto_auto] sm:gap-4"
+                className="flex items-center justify-between px-3 py-3 transition-colors hover:bg-zinc-50 sm:px-5 sm:py-4 dark:hover:bg-zinc-800/50 sm:grid sm:grid-cols-[1fr_auto_auto_auto] sm:gap-4"
               >
                 <div className="min-w-0">
                   <p className="truncate text-sm font-medium text-black dark:text-white">{a.quizTitle}</p>

@@ -67,7 +67,7 @@ export default function Features() {
       <div className="mx-auto max-w-5xl">
         <AnimateIn className="mb-16">
           <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-zinc-400">Why Quizly</p>
-          <h2 className="max-w-sm text-3xl font-bold tracking-tight text-black dark:text-white sm:text-4xl">
+          <h2 className="max-w-sm font-display text-3xl font-bold tracking-tight text-black dark:text-white sm:text-4xl">
             Built for serious learners
           </h2>
         </AnimateIn>
@@ -83,10 +83,10 @@ export default function Features() {
                 {f.icon}
               </div>
               <div>
-                <h3 className={`mb-2 font-semibold text-black dark:text-white ${f.wide ? "text-lg" : ""}`}>
+                <h3 className={`mb-2 font-display font-semibold text-black dark:text-white ${f.wide ? "text-lg" : ""}`}>
                   {f.title}
                 </h3>
-                <p className="text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{f.description}</p>
+                <p className="font-body text-sm leading-relaxed text-zinc-500 dark:text-zinc-400">{f.description}</p>
               </div>
             </AnimateIn>
           ))}

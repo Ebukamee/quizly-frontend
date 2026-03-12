@@ -9,14 +9,17 @@ import {
   UserIcon,
   Settings01Icon,
   Logout01Icon,
+  SidebarLeft01Icon,
 } from "@hugeicons/core-free-icons";
 
 type Props = {
   title: string;
   onMenuClick: () => void;
+  isCollapsed: boolean;
+  onToggleCollapse: () => void;
 };
 
-export default function DashHeader({ title, onMenuClick }: Props) {
+export default function DashHeader({ title, onMenuClick, isCollapsed, onToggleCollapse }: Props) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -33,6 +36,7 @@ export default function DashHeader({ title, onMenuClick }: Props) {
   return (
     <header className="sticky top-0 z-10 flex h-14 shrink-0 items-center justify-between border-b border-zinc-200 bg-white/90 px-5 backdrop-blur dark:border-zinc-800 dark:bg-black/90">
       <div className="flex items-center gap-3">
+        {/* Mobile: hamburger */}
         <button
           onClick={onMenuClick}
           className="flex h-8 w-8 items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 hover:text-black dark:hover:bg-zinc-900 dark:hover:text-white lg:hidden"
@@ -40,11 +44,23 @@ export default function DashHeader({ title, onMenuClick }: Props) {
         >
           <HugeiconsIcon icon={Menu01Icon} size={16} />
         </button>
-        {/* Logo — mobile only (sidebar has it on desktop) */}
+        {/* Desktop: sidebar toggle */}
+        <button
+          onClick={onToggleCollapse}
+          className="hidden h-8 w-8 items-center justify-center rounded-lg text-zinc-400 transition-colors hover:bg-zinc-100 hover:text-black dark:hover:bg-zinc-900 dark:hover:text-white lg:flex"
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          <HugeiconsIcon
+            icon={SidebarLeft01Icon}
+            size={16}
+            className={`transition-transform duration-200 ${isCollapsed ? "rotate-180" : ""}`}
+          />
+        </button>
+        {/* Logo — mobile only */}
         <Link href="/" className="flex items-center gap-2 lg:hidden">
           <Image src="/logo.svg" alt="Quizly" width={20} height={20} className="block dark:hidden" />
           <Image src="/logoDark.svg" alt="Quizly" width={20} height={20} className="hidden dark:block" />
-          <span className="font-display text-sm font-bold tracking-tight text-black dark:text-white">Quizly</span>
+          <span className="font-heading text-sm font-bold tracking-tight text-black dark:text-white">Quizly</span>
         </Link>
         <h1 className="hidden font-display text-sm font-semibold text-black dark:text-white lg:block">{title}</h1>
       </div>

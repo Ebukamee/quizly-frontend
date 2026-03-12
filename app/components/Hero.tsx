@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { SparklesIcon } from "@hugeicons/core-free-icons";
 
 export default function Hero() {
   return (
@@ -7,23 +9,52 @@ export default function Hero() {
         <div className="grid items-center gap-14 lg:grid-cols-2">
 
           {/* Left: Copy */}
-          <div>
+          <div className="relative">
+
+            {/* Floating bubble 1 — top right, above h1 */}
+            <div
+              className="animate-fade-in absolute -right-2 top-0 hidden rotate-2 items-center gap-2 rounded-2xl rounded-tr-sm border border-zinc-200 bg-white px-3.5 py-2 shadow-md lg:flex dark:border-zinc-800 dark:bg-zinc-900"
+              style={{ animationDelay: "600ms" }}
+            >
+              <span className="text-sm">📄</span>
+              <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Biology.pdf uploaded</span>
+            </div>
+
+            {/* Floating bubble 2 — mid left, beside description */}
+            <div
+              className="animate-fade-in absolute -left-10 top-[52%] hidden -rotate-1 items-center gap-2 rounded-2xl rounded-tl-sm bg-black px-3.5 py-2 shadow-md lg:flex dark:bg-white"
+              style={{ animationDelay: "750ms" }}
+            >
+              <HugeiconsIcon icon={SparklesIcon} size={12} className="shrink-0 text-white dark:text-black" />
+              <span className="text-xs font-medium text-white dark:text-black">10 questions ready</span>
+            </div>
+
+            {/* Floating bubble 3 — bottom right, near CTAs */}
+            <div
+              className="animate-fade-in absolute -right-4 bottom-12 hidden rotate-1 items-center gap-2 rounded-2xl rounded-br-sm border border-zinc-200 bg-white px-3.5 py-2 shadow-md lg:flex dark:border-zinc-800 dark:bg-zinc-900"
+              style={{ animationDelay: "900ms" }}
+            >
+              <span className="text-sm">🎉</span>
+              <span className="text-xs font-medium text-zinc-700 dark:text-zinc-300">Score: <strong className="text-black dark:text-white">9/10</strong></span>
+            </div>
+
             <span
               className="animate-fade-up inline-flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-medium text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400"
               style={{ animationDelay: "0ms" }}
             >
-              AI-powered · 4 quiz formats · Private & public
+              <HugeiconsIcon icon={SparklesIcon} size={14} />
+              Quizly AI Public Beta
             </span>
 
             <h1
-              className="animate-fade-up mt-5 text-5xl font-bold leading-[1.1] tracking-tight text-black dark:text-white lg:text-[3.75rem]"
+              className="animate-fade-up mt-5 font-display text-5xl font-bold leading-[1.1] tracking-tight text-black dark:text-white lg:text-[3.75rem]"
               style={{ animationDelay: "80ms" }}
             >
               Turn any document into a quiz — instantly.
             </h1>
 
             <p
-              className="animate-fade-up mt-5 max-w-md text-lg leading-relaxed text-zinc-500 dark:text-zinc-400"
+              className="animate-fade-up mt-5 max-w-md font-body text-lg leading-relaxed text-zinc-500 dark:text-zinc-400"
               style={{ animationDelay: "160ms" }}
             >
               Create subjects, upload your documents, and let AI generate quizzes tailored to your material.
