@@ -1,14 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { quizzes } from "../../lib/mockData";
 import LatexRenderer from "../../components/LatexRenderer";
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowLeft01Icon, ArrowRight01Icon } from "@hugeicons/core-free-icons";
+import { ArrowLeft01Icon, ArrowRight01Icon, Clock01Icon } from "@hugeicons/core-free-icons";
 
 type MathsAnswer = { workings: string; answer: string };
+
+function formatTime(s: number) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return `${String(m).padStart(2, "0")}:${String(sec).padStart(2, "0")}`;
+}
 
 export default function TakeQuizPage() {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +24,15 @@ export default function TakeQuizPage() {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [mathsAnswers, setMathsAnswers] = useState<Record<string, MathsAnswer>>({});
+
+  // Total elapsed timer only
+  const [elapsed, setElapsed] = useState(0);
+  const elapsedRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  useEffect(() => {
+    elapsedRef.current = setInterval(() => setElapsed((s) => s + 1), 1000);
+    return () => { if (elapsedRef.current) clearInterval(elapsedRef.current); };
+  }, []);
 
   if (!quiz) {
     return (
@@ -40,9 +55,10 @@ export default function TakeQuizPage() {
   const currentAnswer = answers[question.id] ?? "";
   const currentMaths = mathsAnswers[question.id] ?? { workings: "", answer: "" };
 
-  const canProceed = isMaths
-    ? currentMaths.answer.trim().length > 0
-    : currentAnswer.trim().length > 0;
+  function isAnswered(qId: string) {
+    if (isMaths) return (mathsAnswers[qId]?.answer ?? "").trim().length > 0;
+    return (answers[qId] ?? "").trim().length > 0;
+  }
 
   function handleAnswer(value: string) {
     setAnswers((prev) => ({ ...prev, [question.id]: value }));
@@ -57,6 +73,7 @@ export default function TakeQuizPage() {
 
   function handleNext() {
     if (isLast) {
+      if (elapsedRef.current) clearInterval(elapsedRef.current);
       router.push("/attempts/a1");
     } else {
       setCurrent((c) => c + 1);
@@ -74,23 +91,19 @@ export default function TakeQuizPage() {
         {quiz.title}
       </Link>
 
-      {/* Progress */}
+      {/* Progress bar + timer */}
       <div className="mb-2 flex items-center justify-between">
         <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
-          Question {current + 1} of {quiz.questions.length}
+          Q {current + 1} of {quiz.questions.length}
         </p>
-        <div className="flex max-w-[50%] flex-wrap gap-1 sm:max-w-none sm:flex-nowrap">
-          {quiz.questions.map((_, i) => (
-            <div
-              key={i}
-              className={`h-1 w-3 rounded-full transition-colors sm:w-5 ${i <= current ? "bg-black dark:bg-white" : "bg-zinc-200 dark:bg-zinc-800"}`}
-            />
-          ))}
+        <div className="flex items-center gap-1.5 text-xs font-semibold tabular-nums text-zinc-500 dark:text-zinc-400">
+          <HugeiconsIcon icon={Clock01Icon} size={12} />
+          {formatTime(elapsed)}
         </div>
       </div>
       <div className="mb-6 h-1 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
         <div
-          className="h-full rounded-full bg-black transition-all dark:bg-white"
+          className="h-full rounded-full bg-black transition-all duration-300 dark:bg-white"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -216,12 +229,51 @@ export default function TakeQuizPage() {
 
         <button
           onClick={handleNext}
-          disabled={!canProceed}
-          className="inline-flex h-10 items-center gap-1.5 rounded-full bg-black px-4 text-sm font-semibold text-white transition-all hover:bg-zinc-800 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-30 sm:gap-2 sm:px-6 dark:bg-white dark:text-black dark:hover:bg-zinc-100"
+          className="inline-flex h-10 items-center gap-1.5 rounded-full bg-black px-4 text-sm font-semibold text-white transition-all hover:bg-zinc-800 active:scale-[0.97] sm:gap-2 sm:px-6 dark:bg-white dark:text-black dark:hover:bg-zinc-100"
         >
           {isLast ? "Submit Quiz" : "Next"}
           {!isLast && <HugeiconsIcon icon={ArrowRight01Icon} size={13} />}
         </button>
+      </div>
+
+      {/* Question number grid */}
+      <div className="mt-6 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
+        <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-zinc-400">Questions</p>
+        <div className="flex flex-wrap gap-2">
+          {quiz.questions.map((q, i) => {
+            const answered = isAnswered(q.id);
+            const isCurrent = i === current;
+            return (
+              <button
+                key={q.id}
+                onClick={() => setCurrent(i)}
+                className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-bold transition-all ${
+                  isCurrent
+                    ? "bg-black text-white dark:bg-white dark:text-black"
+                    : answered
+                    ? "bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/40 dark:text-green-400 dark:hover:bg-green-900/60"
+                    : "bg-red-50 text-red-500 hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/40"
+                }`}
+              >
+                {i + 1}
+              </button>
+            );
+          })}
+        </div>
+        <div className="mt-3 flex items-center gap-4 text-[11px] text-zinc-400">
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-2 w-2 rounded-sm bg-green-400" />
+            Answered
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-2 w-2 rounded-sm bg-red-400" />
+            Not answered
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-2 w-2 rounded-sm bg-black dark:bg-white" />
+            Current
+          </span>
+        </div>
       </div>
     </div>
   );
