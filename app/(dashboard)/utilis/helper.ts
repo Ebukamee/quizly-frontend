@@ -35,6 +35,23 @@ export const createSubject = async (subjectName: string) => {
     }
 };
 
+export const fetchSubjectById = async (id: string) => {
+    try {
+        const response = await fetch(`http://localhost:8000/api/subjects/${id}`, {
+            method: "GET",
+            // CRUCIAL: Sends the Better Auth cookie
+            credentials: "include",
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch subject details");
+
+        return await response.json();
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+};
+
 export const uploadDocument = async (file: File, subjectId: string) => {
     try {
         // 1. Pack the file and data into a raw FormData object
