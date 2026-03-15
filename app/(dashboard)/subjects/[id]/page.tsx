@@ -6,6 +6,7 @@ import Link from "next/link";
 import { fetchSubjectById, uploadDocument, deleteSubjectById, deleteDocumentById } from "../../utilis/helper";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowLeft01Icon, Upload01Icon, File01Icon, MoreVerticalIcon } from "@hugeicons/core-free-icons";
+import Spinner from "../../components/Spinner";
 
 export default function SubjectDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -118,11 +119,7 @@ export default function SubjectDetailPage() {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center py-24 text-center">
-        <p className="text-zinc-500">Loading subject...</p>
-      </div>
-    );
+    return <Spinner />;
   }
 
   if (!subject) {

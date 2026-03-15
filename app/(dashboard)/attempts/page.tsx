@@ -1,5 +1,9 @@
+"use client";
+
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { attempts } from "../lib/mockData";
+import Spinner from "../components/Spinner";
 
 function scorePill(score: number) {
   if (score >= 70) return "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400";
@@ -12,6 +16,14 @@ const sorted = [...attempts].sort(
 );
 
 export default function AttemptsPage() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
+
+  if (loading) return <Spinner />;
+
   return (
     <div className="mx-auto max-w-5xl">
       <div className="mb-6">

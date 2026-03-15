@@ -1,6 +1,11 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useParams } from "next/navigation";
 import { attempts } from "../../lib/mockData";
 import LatexRenderer from "../../components/LatexRenderer";
 import Link from "next/link";
+import Spinner from "../../components/Spinner";
 
 function scorePill(score: number) {
   if (score >= 70) return "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400";
@@ -15,8 +20,16 @@ function marksPill(awarded: number, total: number) {
   return "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-400";
 }
 
-export default async function AttemptDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
+export default function AttemptDetailPage() {
+  const { id } = useParams<{ id: string }>();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
+
+  if (loading) return <Spinner />;
+
   const attempt = attempts.find((a) => a.id === id);
 
   if (!attempt) {

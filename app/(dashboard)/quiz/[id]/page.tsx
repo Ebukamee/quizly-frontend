@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { quizzes } from "../../lib/mockData";
+import Spinner from "../../components/Spinner";
 import LatexRenderer from "../../components/LatexRenderer";
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -21,6 +22,7 @@ export default function TakeQuizPage() {
   const router = useRouter();
   const quiz = quizzes.find((q) => q.id === id);
 
+  const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [mathsAnswers, setMathsAnswers] = useState<Record<string, MathsAnswer>>({});
@@ -30,9 +32,12 @@ export default function TakeQuizPage() {
   const elapsedRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
+    setLoading(false);
     elapsedRef.current = setInterval(() => setElapsed((s) => s + 1), 1000);
     return () => { if (elapsedRef.current) clearInterval(elapsedRef.current); };
   }, []);
+
+  if (loading) return <Spinner />;
 
   if (!quiz) {
     return (

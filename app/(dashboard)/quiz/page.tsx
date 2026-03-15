@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { quizzes, type QuizFormat } from "../lib/mockData";
 import CreateQuizModal from "../components/CreateQuizModal";
+import Spinner from "../components/Spinner";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 
@@ -16,6 +17,13 @@ const formatColor: Record<QuizFormat, string> = {
 
 export default function QuizPage() {
   const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
+
+  if (loading) return <Spinner />;
 
   return (
     <>

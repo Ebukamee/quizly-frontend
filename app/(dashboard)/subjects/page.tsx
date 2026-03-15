@@ -5,12 +5,14 @@ import Link from "next/link";
 import { fetchUserSubjects, createSubject, deleteSubjectById } from "../utilis/helper";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { PlusSignIcon, BookOpen01Icon, ArrowRight01Icon, MoreVerticalIcon } from "@hugeicons/core-free-icons";
+import Spinner from "../components/Spinner";
 
 export default function SubjectsPage() {
   const [showForm, setShowForm] = useState(false);
   const [newName, setNewName] = useState("");
   const [subjects, setSubjects] = useState<any[]>([]);
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   // States for Toasts and Modal
   const [toast, setToast] = useState<{ message: string; type: "warning" | "success" | "error" } | null>(null);
@@ -19,6 +21,7 @@ export default function SubjectsPage() {
   });
 
   const loadSubjects = async () => {
+    setLoading(true);
     const data = await fetchUserSubjects();
     if (data) {
       const formattedSubjects = data.map((s: any) => ({
@@ -28,6 +31,7 @@ export default function SubjectsPage() {
       }));
       setSubjects(formattedSubjects);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -131,7 +135,9 @@ export default function SubjectsPage() {
         </div>
       )}
 
-      {subjects.length === 0 && !showForm ? (
+      {loading ? (
+        <Spinner />
+      ) : subjects.length === 0 && !showForm ? (
         <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-zinc-300 py-20 text-center dark:border-zinc-800">
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-zinc-100 text-zinc-500 dark:bg-zinc-800/50 dark:text-zinc-400">
             <HugeiconsIcon icon={BookOpen01Icon} size={24} />

@@ -1,6 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { stats, attempts, barChartData, donutData } from "../lib/mockData";
+import Spinner from "../components/Spinner";
 import BarChart from "../components/BarChart";
 import DonutChart from "../components/DonutChart";
 import Link from "next/link";
@@ -30,6 +32,14 @@ const recentAttempts = [...attempts]
   .slice(0, 5);
 
 export default function DashboardPage() {
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setLoading(false);
+  }, []);
+
+  if (loading) return <Spinner />;
+
   return (
     <div className="mx-auto max-w-5xl space-y-6">
       {/* Header */}
