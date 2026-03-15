@@ -77,3 +77,39 @@ export const uploadDocument = async (file: File, subjectId: string) => {
         return null;
     }
 };
+export const deleteDocumentById = async (documentId: string) => {
+    try {
+        const response = await fetch(`http://localhost:8000/api/documents/${documentId}`, {
+            method: "DELETE",
+            credentials: "include",
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Failed to delete document");
+        }
+
+        return true;
+    } catch (error) {
+        console.error("Delete Error:", error);
+        return false;
+    }
+};
+export const deleteSubjectById = async (documentId: string) => {
+    try {
+        const response = await fetch(`http://localhost:8000/api/subjects/${documentId}`, {
+            method: "DELETE",
+            credentials: "include",
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Failed to delete Subject");
+        }
+
+        return true; // Success!
+    } catch (error) {
+        console.error("Delete Error:", error);
+        return false;
+    }
+};

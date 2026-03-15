@@ -35,7 +35,7 @@ export default function DashboardPage() {
       {/* Header */}
       <div>
         <h1 className="font-display text-2xl font-bold tracking-tight text-black dark:text-white">Dashboard</h1>
-        <p className="mt-1 text-sm text-zinc-500">Welcome back, here&apos;s your overview</p>
+        <p className="mt-1 text-sm text-zinc-500">Welcome back, here's your overview</p>
       </div>
 
       {/* Stat cards */}
