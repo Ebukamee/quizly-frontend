@@ -20,6 +20,7 @@ export default function QuizPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [subjects, setSubjects] = useState<any[]>([]);
+  const [generating, setGenerating] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "warning" | "success" | "error" } | null>(null);
 
   const showToast = (message: string, type: "warning" | "success" | "error") => {
@@ -48,8 +49,10 @@ export default function QuizPage() {
     topic?: string,
     requestedCount?: number
   ) => {
+    setGenerating(true);
     const newQuiz = await generateQuizRequest(subjectId, documentIds, type, topic, requestedCount);
-    
+    setGenerating(false);
+
     if (newQuiz) {
       setModalOpen(false);
       showToast("Quiz generated successfully!", "success");
@@ -119,6 +122,13 @@ export default function QuizPage() {
         subjects={subjects}
         onGenerate={handleGenerateQuiz}
       />
+
+      {generating && (
+        <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 flex items-center gap-2.5 rounded-full border border-zinc-200 bg-white px-5 py-2.5 shadow-lg dark:border-zinc-700 dark:bg-zinc-900">
+          <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-zinc-200 border-t-black dark:border-zinc-700 dark:border-t-white" />
+          <p className="text-sm font-medium text-black dark:text-white">Generating quiz — don't exit the page</p>
+        </div>
+      )}
 
       {toast && (
         <div
