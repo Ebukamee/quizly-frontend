@@ -20,6 +20,12 @@ export default function QuizPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [subjects, setSubjects] = useState<any[]>([]);
+  const [toast, setToast] = useState<{ message: string; type: "warning" | "success" | "error" } | null>(null);
+
+  const showToast = (message: string, type: "warning" | "success" | "error") => {
+    setToast({ message, type });
+    if (type !== "warning") setTimeout(() => setToast(null), 3000);
+  };
 
   useEffect(() => {
     const loadData = async () => {
@@ -46,9 +52,10 @@ export default function QuizPage() {
     
     if (newQuiz) {
       setModalOpen(false);
+      showToast("Quiz generated successfully!", "success");
       // We will refresh real quiz data here later!
     } else {
-      alert("Failed to generate quiz. Please try again.");
+      showToast("Failed to generate quiz. Please try again.", "error");
     }
   };
 
@@ -106,12 +113,24 @@ export default function QuizPage() {
         <HugeiconsIcon icon={PlusSignIcon} size={24} />
       </button>
 
-      <CreateQuizModal 
-        isOpen={modalOpen} 
-        onClose={() => setModalOpen(false)} 
-        subjects={subjects} 
-        onGenerate={handleGenerateQuiz} 
+      <CreateQuizModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        subjects={subjects}
+        onGenerate={handleGenerateQuiz}
       />
+
+      {toast && (
+        <div
+          className={`fixed bottom-6 right-6 z-50 rounded-lg px-4 py-3 text-sm font-medium text-white shadow-lg transition-all ${
+            toast.type === "warning" ? "bg-yellow-500" :
+            toast.type === "success" ? "bg-green-600" :
+            "bg-red-600"
+          }`}
+        >
+          {toast.message}
+        </div>
+      )}
     </>
   );
 }
