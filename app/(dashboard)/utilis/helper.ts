@@ -113,3 +113,42 @@ export const deleteSubjectById = async (documentId: string) => {
         return false;
     }
 };
+
+// --- QUIZ GENERATION ---
+
+export const generateQuizRequest = async (
+  subjectId: string,
+  documentIds: string[],
+  type: 'mcq' | 'subjective' | 'theory' | 'math',
+  topic?: string,
+  requestedCount?: number
+) => {
+  try {
+    const response = await fetch("http://localhost:8000/api/quizzes/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", 
+      body: JSON.stringify({
+        subjectId,
+        documentIds,
+        type,
+        topic,
+        requestedCount,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to generate quiz");
+    }
+
+    const data = await response.json();
+    return data; 
+    
+  } catch (error) {
+    console.error("Generate Quiz Fetch Error:", error);
+    return null;
+  }
+};

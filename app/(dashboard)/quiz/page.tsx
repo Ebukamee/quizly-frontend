@@ -7,6 +7,7 @@ import CreateQuizModal from "../components/CreateQuizModal";
 import Spinner from "../components/Spinner";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
+import { fetchUserSubjects, generateQuizRequest } from "../utilis/helper";
 
 const formatColor: Record<QuizFormat, string> = {
   MCQ: "text-zinc-500",
@@ -18,10 +19,38 @@ const formatColor: Record<QuizFormat, string> = {
 export default function QuizPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [subjects, setSubjects] = useState<any[]>([]);
 
   useEffect(() => {
-    setLoading(false);
+    const loadData = async () => {
+      // Fetch the real subjects to pass to the modal
+      const fetchedSubjects = await fetchUserSubjects();
+      if (fetchedSubjects) {
+        setSubjects(fetchedSubjects);
+      }
+      setLoading(false);
+    };
+
+    loadData();
   }, []);
+
+  // Wrapper function to handle the API call and close the modal on success
+  const handleGenerateQuiz = async (
+    subjectId: string,
+    documentIds: string[],
+    type: 'mcq' | 'subjective' | 'theory' | 'math',
+    topic?: string,
+    requestedCount?: number
+  ) => {
+    const newQuiz = await generateQuizRequest(subjectId, documentIds, type, topic, requestedCount);
+    
+    if (newQuiz) {
+      setModalOpen(false);
+      // We will refresh real quiz data here later!
+    } else {
+      alert("Failed to generate quiz. Please try again.");
+    }
+  };
 
   if (loading) return <Spinner />;
 
@@ -77,7 +106,12 @@ export default function QuizPage() {
         <HugeiconsIcon icon={PlusSignIcon} size={24} />
       </button>
 
-      <CreateQuizModal isOpen={modalOpen} onClose={() => setModalOpen(false)} />
+      <CreateQuizModal 
+        isOpen={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        subjects={subjects} 
+        onGenerate={handleGenerateQuiz} 
+      />
     </>
   );
 }
