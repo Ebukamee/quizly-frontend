@@ -2,12 +2,12 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { quizzes } from "../../lib/mockData";
 import Spinner from "../../components/Spinner";
 import LatexRenderer from "../../components/LatexRenderer";
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowLeft01Icon, ArrowRight01Icon, Clock01Icon } from "@hugeicons/core-free-icons";
+import { fetchQuizById } from "../../utilis/helper"; // <-- Import the new helper
 
 type MathsAnswer = { workings: string; answer: string };
 
@@ -20,8 +20,8 @@ function formatTime(s: number) {
 export default function TakeQuizPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const quiz = quizzes.find((q) => q.id === id);
-
+  
+  const [quiz, setQuiz] = useState<any>(null); // State for the real quiz
   const [loading, setLoading] = useState(true);
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -32,17 +32,62 @@ export default function TakeQuizPage() {
   const elapsedRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    setLoading(false);
-    elapsedRef.current = setInterval(() => setElapsed((s) => s + 1), 1000);
+    const loadQuiz = async () => {
+      setLoading(true);
+      const fetchedQuiz = await fetchQuizById(id as string);
+      
+      if (fetchedQuiz) {
+        // 1. Extract the correct questions array based on the quiz type
+        let rawQuestions = [];
+        if (fetchedQuiz.type === 'MCQ') rawQuestions = fetchedQuiz.mcqQuestions;
+        else if (fetchedQuiz.type === 'SUBJECTIVE') rawQuestions = fetchedQuiz.subjectiveQuestions;
+        else if (fetchedQuiz.type === 'THEORY') rawQuestions = fetchedQuiz.theoryQuestions;
+        else if (fetchedQuiz.type === 'MATH') rawQuestions = fetchedQuiz.mathQuestions;
+
+        // 2. Normalize the questions to match the UI's exact expected format
+        const normalizedQuestions = rawQuestions.map((q: any) => ({
+          id: q.id,
+          text: q.questionText, // Map DB "question" to UI "text"
+          // If MCQ, map the raw string array into { label: "A", text: "..." } objects
+          options: fetchedQuiz.type === 'MCQ' ? q.options.map((optText: string, idx: number) => ({
+            label: String.fromCharCode(65 + idx), // Automatically generates A, B, C, D
+            text: optText
+          })) : undefined
+        }));
+
+        // 3. Map the Prisma ENUM type to the UI's format strings
+        const formatMap: Record<string, string> = {
+          'MCQ': 'MCQ',
+          'SUBJECTIVE': 'Subjective',
+          'THEORY': 'Essay',
+          'MATH': 'Maths'
+        };
+
+        setQuiz({
+          ...fetchedQuiz,
+          format: formatMap[fetchedQuiz.type] || fetchedQuiz.type,
+          subjectName: fetchedQuiz.subject?.name || "General",
+          questions: normalizedQuestions
+        });
+      }
+      
+      setLoading(false);
+      
+      // Start the timer
+      elapsedRef.current = setInterval(() => setElapsed((s) => s + 1), 1000);
+    };
+
+    loadQuiz();
+
     return () => { if (elapsedRef.current) clearInterval(elapsedRef.current); };
-  }, []);
+  }, [id]);
 
   if (loading) return <Spinner />;
 
-  if (!quiz) {
+  if (!quiz || !quiz.questions || quiz.questions.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
-        <p className="text-zinc-500">Quiz not found.</p>
+        <p className="text-zinc-500">Quiz not found or has no questions.</p>
         <Link href="/quiz" className="mt-4 text-sm underline">Back to Quizzes</Link>
       </div>
     );
@@ -79,6 +124,8 @@ export default function TakeQuizPage() {
   function handleNext() {
     if (isLast) {
       if (elapsedRef.current) clearInterval(elapsedRef.current);
+      // We will hook this up to submit the attempt to the backend next!
+      console.log("Answers Payload:", { answers, mathsAnswers, elapsed });
       router.push("/attempts/a1");
     } else {
       setCurrent((c) => c + 1);
@@ -131,7 +178,7 @@ export default function TakeQuizPage() {
         {/* MCQ options */}
         {isMCQ && question.options && (
           <div className="space-y-2">
-            {question.options.map((opt) => (
+            {question.options.map((opt: any) => (
               <button
                 key={opt.label}
                 type="button"
@@ -245,7 +292,7 @@ export default function TakeQuizPage() {
       <div className="mt-6 rounded-xl border border-zinc-200 bg-white p-4 dark:border-zinc-800 dark:bg-zinc-900">
         <p className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-zinc-400">Questions</p>
         <div className="flex flex-wrap gap-2">
-          {quiz.questions.map((q, i) => {
+          {quiz.questions.map((q: any, i: number) => {
             const answered = isAnswered(q.id);
             const isCurrent = i === current;
             return (

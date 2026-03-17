@@ -152,3 +152,47 @@ export const generateQuizRequest = async (
     return null;
   }
 };
+
+export const fetchUserQuizzes = async () => {
+  try {
+    const response = await fetch("http://localhost:8000/api/quizzes", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", 
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to fetch quizzes");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Fetch Quizzes Error:", error);
+    return []; // Return an empty array on failure so the UI doesn't crash
+  }
+};
+
+export const fetchQuizById = async (quizId: string) => {
+  try {
+    const response = await fetch(`http://localhost:8000/api/quizzes/${quizId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", 
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to fetch quiz details");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Fetch Quiz ${quizId} Error:`, error);
+    return null; 
+  }
+};

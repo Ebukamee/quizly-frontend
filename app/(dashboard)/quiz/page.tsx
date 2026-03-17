@@ -2,24 +2,25 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { quizzes, type QuizFormat } from "../lib/mockData";
 import CreateQuizModal from "../components/CreateQuizModal";
 import Spinner from "../components/Spinner";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
-import { fetchUserSubjects, generateQuizRequest } from "../utilis/helper";
+import { fetchUserSubjects, generateQuizRequest, fetchUserQuizzes } from "../utilis/helper";
 
-const formatColor: Record<QuizFormat, string> = {
+// Fallback color mapping for the DB enum types
+const formatColor: Record<string, string> = {
   MCQ: "text-zinc-500",
-  Subjective: "text-zinc-500",
-  Essay: "text-zinc-500",
-  Maths: "text-zinc-500",
+  SUBJECTIVE: "text-zinc-500",
+  THEORY: "text-zinc-500",
+  MATH: "text-zinc-500",
 };
 
 export default function QuizPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [subjects, setSubjects] = useState<any[]>([]);
+  const [userQuizzes, setUserQuizzes] = useState<any[]>([]); // New state for real quizzes
   const [generating, setGenerating] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "warning" | "success" | "error" } | null>(null);
 
@@ -30,11 +31,15 @@ export default function QuizPage() {
 
   useEffect(() => {
     const loadData = async () => {
-      // Fetch the real subjects to pass to the modal
-      const fetchedSubjects = await fetchUserSubjects();
-      if (fetchedSubjects) {
-        setSubjects(fetchedSubjects);
-      }
+      // Fetch both subjects and quizzes simultaneously 
+      const [fetchedSubjects, fetchedQuizList] = await Promise.all([
+        fetchUserSubjects(),
+        fetchUserQuizzes()
+      ]);
+      
+      if (fetchedSubjects) setSubjects(fetchedSubjects);
+      if (fetchedQuizList) setUserQuizzes(fetchedQuizList);
+      
       setLoading(false);
     };
 
@@ -56,7 +61,10 @@ export default function QuizPage() {
     if (newQuiz) {
       setModalOpen(false);
       showToast("Quiz generated successfully!", "success");
-      // We will refresh real quiz data here later!
+      
+      // Refresh real quiz data immediately so the new card pops up!
+      const updatedQuizzes = await fetchUserQuizzes();
+      if (updatedQuizzes) setUserQuizzes(updatedQuizzes);
     } else {
       showToast("Failed to generate quiz. Please try again.", "error");
     }
@@ -71,7 +79,7 @@ export default function QuizPage() {
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h1 className="font-display text-2xl font-bold tracking-tight text-black dark:text-white">Your Quizzes</h1>
-            <p className="mt-0.5 text-sm text-zinc-500">{quizzes.length} quizzes generated from your documents</p>
+            <p className="mt-0.5 text-sm text-zinc-500">{userQuizzes.length} quizzes generated from your documents</p>
           </div>
           <button
             onClick={() => setModalOpen(true)}
@@ -84,27 +92,35 @@ export default function QuizPage() {
 
         {/* Quiz cards — reference-style tall cards */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {quizzes.map((q) => (
-            <Link
-              key={q.id}
-              href={`/quiz/${q.id}`}
-              className="card-hover group flex h-[140px] flex-col justify-between rounded-xl border border-zinc-200 bg-white p-4 sm:h-[160px] sm:p-5 dark:border-zinc-800 dark:bg-zinc-900"
-            >
-              <div>
-                <h3 className="font-display text-base font-bold text-black dark:text-white">{q.title}</h3>
-                <p className="mt-0.5 text-sm text-zinc-500">{q.subjectName}</p>
-              </div>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className={`rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-xs font-medium dark:border-zinc-700 dark:bg-zinc-800 ${formatColor[q.format]}`}>
-                    {q.format}
-                  </span>
-                  <span className="text-xs text-zinc-400">{q.questionCount} Qs</span>
+          {userQuizzes.length === 0 ? (
+            <div className="col-span-full rounded-xl border border-dashed border-zinc-200 py-12 text-center text-zinc-500 dark:border-zinc-800">
+              You haven't generated any quizzes yet. Click "Create Quiz" to get started!
+            </div>
+          ) : (
+            userQuizzes.map((q) => (
+              <Link
+                key={q.id}
+                href={`/quiz/${q.id}`}
+                className="card-hover group flex h-[140px] flex-col justify-between rounded-xl border border-zinc-200 bg-white p-4 sm:h-[160px] sm:p-5 dark:border-zinc-800 dark:bg-zinc-900"
+              >
+                <div>
+                  <h3 className="font-display text-base font-bold text-black dark:text-white">{q.title}</h3>
+                  <p className="mt-0.5 text-sm text-zinc-500">{q.subject?.name || "General"}</p>
                 </div>
-                <span className="text-xs text-zinc-400">{q.createdAt}</span>
-              </div>
-            </Link>
-          ))}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className={`rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-xs font-medium dark:border-zinc-700 dark:bg-zinc-800 ${formatColor[q.type] || "text-zinc-500"}`}>
+                      {q.type}
+                    </span>
+                    <span className="text-xs text-zinc-400">{q.questionCount} Qs</span>
+                  </div>
+                  <span className="text-xs text-zinc-400">
+                    {new Date(q.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                  </span>
+                </div>
+              </Link>
+            ))
+          )}
         </div>
       </div>
 

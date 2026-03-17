@@ -18,7 +18,7 @@ export default function LatexRenderer({ text, className = "" }: Props) {
   const html = useMemo(() => {
     // Split on $$...$$ first (display), then $...$ (inline)
     const parts: { type: "text" | "display" | "inline"; content: string }[] = [];
-    let remaining = text;
+    let remaining = text || '';
 
     while (remaining.length > 0) {
       const displayIdx = remaining.indexOf("$$");
