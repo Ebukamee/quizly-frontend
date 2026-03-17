@@ -196,3 +196,25 @@ export const fetchQuizById = async (quizId: string) => {
     return null; 
   }
 };
+
+export const deleteQuizRequest = async (quizId: string): Promise<boolean> => {
+  try {
+    const response = await fetch(`http://localhost:8000/api/quizzes/${quizId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", 
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to delete quiz");
+    }
+
+    return true;
+  } catch (error) {
+    console.error(`Delete Quiz ${quizId} Error:`, error);
+    return false;
+  }
+};

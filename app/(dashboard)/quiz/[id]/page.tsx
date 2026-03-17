@@ -6,8 +6,8 @@ import Spinner from "../../components/Spinner";
 import LatexRenderer from "../../components/LatexRenderer";
 import Link from "next/link";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowLeft01Icon, ArrowRight01Icon, Clock01Icon } from "@hugeicons/core-free-icons";
-import { fetchQuizById } from "../../utilis/helper"; // <-- Import the new helper
+import { ArrowLeft01Icon, ArrowRight01Icon, Clock01Icon, MoreVerticalIcon } from "@hugeicons/core-free-icons";
+import { fetchQuizById, deleteQuizRequest } from "../../utilis/helper";
 
 type MathsAnswer = { workings: string; answer: string };
 
@@ -21,8 +21,11 @@ export default function TakeQuizPage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   
-  const [quiz, setQuiz] = useState<any>(null); // State for the real quiz
+  const [quiz, setQuiz] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "warning" | "success" | "error" } | null>(null);
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [mathsAnswers, setMathsAnswers] = useState<Record<string, MathsAnswer>>({});
@@ -55,7 +58,7 @@ export default function TakeQuizPage() {
           })) : undefined
         }));
 
-        // 3. Map the Prisma ENUM type to the UI's format strings
+        // Map the Prisma ENUM type to the UI's format strings
         const formatMap: Record<string, string> = {
           'MCQ': 'MCQ',
           'SUBJECTIVE': 'Subjective',
@@ -81,6 +84,29 @@ export default function TakeQuizPage() {
 
     return () => { if (elapsedRef.current) clearInterval(elapsedRef.current); };
   }, [id]);
+
+  const showToast = (message: string, type: "warning" | "success" | "error") => {
+    setToast({ message, type });
+    if (type !== "warning") setTimeout(() => setToast(null), 3000);
+  };
+
+  const triggerDelete = () => {
+    setIsMenuOpen(false);
+    setDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    setDeleteModal(false);
+    showToast("Deleting...", "warning");
+
+    const success = await deleteQuizRequest(id as string);
+    if (success) {
+      showToast("Quiz deleted successfully", "success");
+      setTimeout(() => router.push("/quiz"), 1000);
+    } else {
+      showToast("Failed to delete quiz", "error");
+    }
+  };
 
   if (loading) return <Spinner />;
 
@@ -134,14 +160,36 @@ export default function TakeQuizPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      {/* Back link */}
-      <Link
-        href="/quiz"
-        className="mb-6 inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-black dark:hover:text-white"
-      >
-        <HugeiconsIcon icon={ArrowLeft01Icon} size={14} />
-        {quiz.title}
-      </Link>
+      {/* Back link + menu */}
+      <div className="mb-6 flex items-center justify-between">
+        <Link
+          href="/quiz"
+          className="inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-black dark:hover:text-white"
+        >
+          <HugeiconsIcon icon={ArrowLeft01Icon} size={14} />
+          {quiz.title}
+        </Link>
+
+        <div className="relative">
+          <button
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-zinc-200 text-zinc-500 transition-all hover:border-zinc-400 hover:text-black sm:h-10 sm:w-10 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-500 dark:hover:text-white"
+          >
+            <HugeiconsIcon icon={MoreVerticalIcon} size={16} />
+          </button>
+
+          {isMenuOpen && (
+            <div className="absolute right-0 mt-2 w-36 rounded-xl border border-zinc-200 bg-white p-1.5 shadow-lg z-10 dark:border-zinc-800 dark:bg-zinc-900">
+              <button
+                onClick={triggerDelete}
+                className="flex w-full items-center justify-start rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:hover:bg-red-500/10"
+              >
+                Delete Quiz
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
 
       {/* Progress bar + timer */}
       <div className="mb-2 flex items-center justify-between">
@@ -327,6 +375,47 @@ export default function TakeQuizPage() {
           </span>
         </div>
       </div>
+
+      {/* --- CONFIRMATION MODAL --- */}
+      {deleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl dark:border dark:border-zinc-800 dark:bg-zinc-900">
+            <h3 className="font-display text-lg font-bold text-black dark:text-white">
+              Delete Quiz?
+            </h3>
+            <p className="mt-2 text-sm text-zinc-500">
+              Are you sure you want to delete this quiz? This will also delete all questions inside it. This action cannot be undone.
+            </p>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setDeleteModal(false)}
+                className="rounded-full px-4 py-2 text-sm font-semibold text-zinc-600 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-red-700"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* --- TOAST NOTIFICATIONS --- */}
+      {toast && (
+        <div
+          className={`fixed bottom-6 right-6 z-50 rounded-lg px-4 py-3 text-sm font-medium text-white shadow-lg transition-all ${
+            toast.type === "warning" ? "bg-yellow-500" :
+            toast.type === "success" ? "bg-green-600" :
+            "bg-red-600"
+          }`}
+        >
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 }
