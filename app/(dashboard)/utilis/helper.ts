@@ -121,7 +121,8 @@ export const generateQuizRequest = async (
   documentIds: string[],
   type: 'mcq' | 'subjective' | 'theory' | 'math',
   topic?: string,
-  requestedCount?: number
+  requestedCount?: number,
+  isPublic?: boolean
 ) => {
   try {
     const response = await fetch("http://localhost:8000/api/quizzes/generate", {
@@ -129,13 +130,14 @@ export const generateQuizRequest = async (
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "include", 
+      credentials: "include",
       body: JSON.stringify({
         subjectId,
         documentIds,
         type,
         topic,
         requestedCount,
+        isPublic: isPublic ?? false,
       }),
     });
 
@@ -217,4 +219,53 @@ export const deleteQuizRequest = async (quizId: string): Promise<boolean> => {
     console.error(`Delete Quiz ${quizId} Error:`, error);
     return false;
   }
+};
+// ... (keep all your existing Subject and Document functions above)
+
+/**
+ * Submits a completed quiz attempt to the backend for grading.
+ * UPDATED: Added credentials: "include" to match your auth pattern.
+ */
+export const submitAttempt = async (quizId: string, answers: any[], studentName?: string) => {
+  try {
+    const response = await fetch(`http://localhost:8000/api/attempts/${quizId}/submit`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // CRITICAL: This allows Better Auth to verify your session on port 8000
+      credentials: "include", 
+      body: JSON.stringify({
+        studentName,
+        answers
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || 'Failed to submit attempt');
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Submission error:", error);
+    throw error;
+  }
+};
+
+/**
+ * Converts a file from an input field into a Gemini-friendly Base64 string.
+ */
+export const prepareImageForAI = (file: File): Promise<{ base64: string; mimeType: string }> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      const result = reader.result as string;
+      const [prefix, base64] = result.split(',');
+      const mimeType = prefix.split(':')[1].split(';')[0];
+      resolve({ base64, mimeType });
+    };
+    reader.onerror = (error) => reject(error);
+  });
 };

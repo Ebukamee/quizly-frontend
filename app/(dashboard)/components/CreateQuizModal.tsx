@@ -10,11 +10,12 @@ type Props = {
   onClose: () => void;
   subjects: any[];
   onGenerate: (
-    subjectId: string, 
-    documentIds: string[], 
-    type: 'mcq' | 'subjective' | 'theory' | 'math', 
-    topic?: string, 
-    count?: number
+    subjectId: string,
+    documentIds: string[],
+    type: 'mcq' | 'subjective' | 'theory' | 'math',
+    topic?: string,
+    count?: number,
+    isPublic?: boolean
   ) => void;
 };
 
@@ -25,6 +26,7 @@ export default function CreateQuizModal({ isOpen, onClose, subjects, onGenerate 
   const [format, setFormat] = useState<string>("MCQ");
   const [questions, setQuestions] = useState(10);
   const [topic, setTopic] = useState("");
+  const [isPublic, setIsPublic] = useState(false);
 
   // Document states
   const [docs, setDocs] = useState<any[]>([]);
@@ -87,7 +89,8 @@ export default function CreateQuizModal({ isOpen, onClose, subjects, onGenerate 
       selectedDocs,
       typeMap[format],
       topic,
-      questions
+      questions,
+      isPublic
     );
 
     setIsGenerating(false);
@@ -209,6 +212,36 @@ export default function CreateQuizModal({ isOpen, onClose, subjects, onGenerate 
               onChange={(e) => setQuestions(Number(e.target.value))}
               className="w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-black outline-none focus:border-black dark:border-zinc-700 dark:bg-zinc-900 dark:text-white dark:focus:border-white disabled:opacity-50"
             />
+          </div>
+          {/* Visibility */}
+          <div>
+            <label className="mb-2 block text-xs font-semibold text-black dark:text-white">Visibility</label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                disabled={isGenerating}
+                onClick={() => setIsPublic(false)}
+                className={`rounded-lg border px-3 py-2.5 text-left text-sm transition-colors disabled:opacity-50 ${
+                  !isPublic
+                    ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
+                    : "border-zinc-200 text-zinc-600 hover:border-zinc-400 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-500"
+                }`}
+              >
+                Private
+              </button>
+              <button
+                type="button"
+                disabled={isGenerating}
+                onClick={() => setIsPublic(true)}
+                className={`rounded-lg border px-3 py-2.5 text-left text-sm transition-colors disabled:opacity-50 ${
+                  isPublic
+                    ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black"
+                    : "border-zinc-200 text-zinc-600 hover:border-zinc-400 dark:border-zinc-700 dark:text-zinc-400 dark:hover:border-zinc-500"
+                }`}
+              >
+                Public
+              </button>
+            </div>
           </div>
         </div>
 

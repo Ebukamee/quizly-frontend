@@ -84,10 +84,11 @@ export default function QuizPage() {
     documentIds: string[],
     type: 'mcq' | 'subjective' | 'theory' | 'math',
     topic?: string,
-    requestedCount?: number
+    requestedCount?: number,
+    isPublic?: boolean
   ) => {
     setGenerating(true);
-    const newQuiz = await generateQuizRequest(subjectId, documentIds, type, topic, requestedCount);
+    const newQuiz = await generateQuizRequest(subjectId, documentIds, type, topic, requestedCount, isPublic);
     setGenerating(false);
 
     if (newQuiz) {
@@ -164,6 +165,9 @@ export default function QuizPage() {
                   <div className="flex items-center gap-2">
                     <span className={`rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-xs font-medium dark:border-zinc-700 dark:bg-zinc-800 ${formatColor[q.type] || "text-zinc-500"}`}>
                       {q.type}
+                    </span>
+                    <span className={`rounded-md border px-2 py-0.5 text-xs font-medium ${q.isPublic ? "border-green-200 bg-green-50 text-green-600 dark:border-green-800 dark:bg-green-900/30 dark:text-green-400" : "border-zinc-200 bg-zinc-50 text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800"}`}>
+                      {q.isPublic ? "Public" : "Private"}
                     </span>
                     <span className="text-xs text-zinc-400">{q.questionCount} Qs</span>
                   </div>
