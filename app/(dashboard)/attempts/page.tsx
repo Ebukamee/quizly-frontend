@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { attempts } from "../lib/mockData";
+import { fetchUserAttempts } from "../utilis/helper";
 import Spinner from "../components/Spinner";
 
 function scorePill(score: number) {
@@ -11,15 +11,37 @@ function scorePill(score: number) {
   return "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-400";
 }
 
-const sorted = [...attempts].sort(
-  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-);
+// SAFE DATE FORMATTER
+function safeFormatDate(dateInput?: string | Date) {
+  if (!dateInput) return "Unknown Date";
+  const d = new Date(dateInput);
+  if (isNaN(d.getTime())) return "Unknown Date";
+  return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+}
+
+const formatMap: Record<string, string> = {
+  MCQ: "MCQ",
+  SUBJECTIVE: "Subjective",
+  THEORY: "Essay",
+  MATH: "Maths",
+};
 
 export default function AttemptsPage() {
   const [loading, setLoading] = useState(true);
+  const [attempts, setAttempts] = useState<any[]>([]);
 
   useEffect(() => {
-    setLoading(false);
+    const load = async () => {
+      const data = await fetchUserAttempts();
+      if (data && Array.isArray(data)) {
+        const sorted = [...data].sort(
+          (a: any, b: any) => new Date(b.completedAt || 0).getTime() - new Date(a.completedAt || 0).getTime()
+        );
+        setAttempts(sorted);
+      }
+      setLoading(false);
+    };
+    load();
   }, []);
 
   if (loading) return <Spinner />;
@@ -31,37 +53,46 @@ export default function AttemptsPage() {
         <p className="mt-0.5 text-sm text-zinc-500">{attempts.length} quiz attempts recorded</p>
       </div>
 
-      <div className="rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
-        {/* Table header — desktop */}
-        <div className="hidden border-b border-zinc-100 px-5 py-3 dark:border-zinc-800 sm:grid sm:grid-cols-[1fr_auto_auto_auto] sm:gap-4">
-          {["Subject & Quiz", "Format", "Score", "Date"].map((h) => (
-            <p key={h} className="text-xs font-semibold uppercase tracking-widest text-zinc-400">{h}</p>
-          ))}
+      {attempts.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-zinc-200 py-12 text-center text-zinc-500 dark:border-zinc-800">
+          No attempts yet. Complete a quiz to see your results here!
         </div>
+      ) : (
+        <div className="rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
+          {/* Table header — desktop */}
+          <div className="hidden border-b border-zinc-100 px-5 py-3 dark:border-zinc-800 sm:grid sm:grid-cols-[1fr_auto_auto_auto] sm:gap-4">
+            {["Subject & Quiz", "Type", "Score", "Date"].map((h) => (
+              <p key={h} className="text-xs font-semibold uppercase tracking-widest text-zinc-400">{h}</p>
+            ))}
+          </div>
 
-        <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
-          {sorted.map((a) => (
-            <li key={a.id}>
-              <Link
-                href={`/attempts/${a.id}`}
-                className="flex items-center justify-between px-3 py-3 transition-all duration-150 hover:bg-zinc-50 hover:pl-4 sm:px-5 sm:py-4 sm:hover:pl-6 dark:hover:bg-zinc-800/50 sm:grid sm:grid-cols-[1fr_auto_auto_auto] sm:gap-4"
-              >
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-medium text-black dark:text-white">{a.quizTitle}</p>
-                  <p className="text-xs text-zinc-400">{a.subjectName}</p>
-                </div>
-                <span className="hidden rounded-md border border-zinc-200 px-2.5 py-0.5 text-xs text-zinc-500 dark:border-zinc-700 dark:text-zinc-400 sm:inline-flex">
-                  {a.format}
-                </span>
-                <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ${scorePill(a.score)}`}>
-                  {a.score}%
-                </span>
-                <span className="hidden text-xs text-zinc-400 sm:inline">{a.date}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
+          <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
+            {attempts.map((a) => (
+              <li key={a.id}>
+                <Link
+                  href={`/attempts/${a.id}`}
+                  className="flex items-center justify-between px-3 py-3 transition-all duration-150 hover:bg-zinc-50 hover:pl-4 sm:px-5 sm:py-4 sm:hover:pl-6 dark:hover:bg-zinc-800/50 sm:grid sm:grid-cols-[1fr_auto_auto_auto] sm:gap-4"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-medium text-black dark:text-white">{a.quiz?.title || "Untitled Quiz"}</p>
+                    <p className="text-xs text-zinc-400">{a.quiz?.subject?.name || "General"}</p>
+                  </div>
+                  <span className="hidden rounded-md border border-zinc-200 px-2.5 py-0.5 text-xs text-zinc-500 dark:border-zinc-700 dark:text-zinc-400 sm:inline-flex">
+                    {formatMap[a.quizType] || a.quizType || "Standard"}
+                  </span>
+                  <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ${scorePill(a.scorePercent ?? a.totalScore ?? 0)}`}>
+                    {/* Fallback to totalScore if scorePercent is missing for older records */}
+                    {a.scorePercent ?? (a.totalScore && a.totalPossible ? Math.round((a.totalScore / a.totalPossible) * 100) : 0)}%
+                  </span>
+                  <span className="hidden text-xs text-zinc-400 sm:inline">
+                    {safeFormatDate(a.completedAt)}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

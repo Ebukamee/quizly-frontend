@@ -93,7 +93,13 @@ export default function TakeQuizPage() {
           if (elapsedSoFar < TWO_HOURS) {
             startAt = session.startedAt;
             setAnswers(session.answers || {});
-            setMathsAnswers(session.mathsAnswers || {});
+            // Restore only metadata — dataUrl is no longer persisted
+            const restoredMaths: Record<string, MathsAnswer> = {};
+            for (const [qId, val] of Object.entries(session.mathsAnswers || {})) {
+              const v = val as any;
+              restoredMaths[qId] = { fileName: v.fileName || "", dataUrl: v.dataUrl || "" };
+            }
+            setMathsAnswers(restoredMaths);
             setCurrent(session.current || 0);
           } else {
             localStorage.removeItem(`quiz_session_${id}`);
@@ -129,10 +135,16 @@ export default function TakeQuizPage() {
 
   useEffect(() => {
     if (!initializedRef.current) return;
+    // Strip dataUrl from mathsAnswers to avoid blowing up localStorage (~5MB limit).
+    // Only persist file metadata; the actual image lives in memory until submit.
+    const mathsMeta: Record<string, { fileName: string }> = {};
+    for (const [qId, val] of Object.entries(mathsAnswers)) {
+      if (val.fileName) mathsMeta[qId] = { fileName: val.fileName };
+    }
     localStorage.setItem(sessionKey, JSON.stringify({
       startedAt: startedAtRef.current,
       answers,
-      mathsAnswers,
+      mathsAnswers: mathsMeta,
       current,
     }));
   }, [answers, mathsAnswers, current, sessionKey]);
@@ -175,7 +187,7 @@ export default function TakeQuizPage() {
   const currentMaths = mathsAnswers[question?.id] ?? { fileName: "", dataUrl: "" };
 
   function isAnswered(qId: string) {
-    if (isMaths) return (mathsAnswers[qId]?.dataUrl ?? "").length > 0;
+    if (isMaths) return !!(mathsAnswers[qId]?.dataUrl);
     return (answers[qId] ?? "").trim().length > 0;
   }
 
@@ -205,6 +217,10 @@ export default function TakeQuizPage() {
   function handleMathsDrop(e: React.DragEvent) {
     e.preventDefault();
     setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 1) {
+      showToast("Only one image per question is allowed.", "error");
+      return;
+    }
     if (e.dataTransfer.files && e.dataTransfer.files[0]) handleMathsFile(e.dataTransfer.files[0]);
   }
 
@@ -228,10 +244,15 @@ export default function TakeQuizPage() {
           let base64 = undefined;
           let mime = undefined;
 
-          if (mathData?.file) {
+          if (mathData?.file instanceof File) {
             const processed = await prepareImageForAI(mathData.file);
             base64 = processed.base64;
             mime = processed.mimeType;
+          } else if (mathData?.dataUrl) {
+            // Fallback: extract base64 from stored dataUrl (after page reload, File is lost)
+            const [prefix, b64] = mathData.dataUrl.split(',');
+            base64 = b64;
+            mime = prefix.split(':')[1]?.split(';')[0];
           }
 
           return {
@@ -319,9 +340,12 @@ export default function TakeQuizPage() {
           <div className="space-y-3">
             <p className="text-xs text-zinc-500 dark:text-zinc-400">Upload an image of your handwritten answer. Ensure your <span className="font-semibold text-zinc-700 dark:text-zinc-300">final answer is clearly labeled</span>.</p>
             <input type="file" ref={mathsFileRef} onChange={handleMathsFileSelect} className="hidden" accept=".png,.jpg,.jpeg,.heic,.pdf" />
-            {currentMaths.dataUrl ? (
+            {currentMaths.dataUrl || currentMaths.fileName ? (
               <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800">
-                {currentMaths.dataUrl.startsWith("data:image/") && <img src={currentMaths.dataUrl} alt="Uploaded answer" className="mb-3 max-h-64 w-full rounded-lg object-contain" />}
+                {currentMaths.dataUrl && currentMaths.dataUrl.startsWith("data:image/") && <img src={currentMaths.dataUrl} alt="Uploaded answer" className="mb-3 max-h-64 w-full rounded-lg object-contain" />}
+                {!currentMaths.dataUrl && currentMaths.fileName && (
+                  <p className="mb-3 text-xs text-amber-600 dark:text-amber-400">Image preview lost after reload. Please re-upload to submit.</p>
+                )}
                 <div className="flex items-center justify-between">
                   <div className="flex min-w-0 items-center gap-2">
                     <HugeiconsIcon icon={Upload01Icon} size={14} className="shrink-0 text-zinc-400" />

@@ -253,6 +253,46 @@ export const submitAttempt = async (quizId: string, answers: any[], studentName?
   }
 };
 
+// --- ATTEMPTS ---
+
+export const fetchUserAttempts = async () => {
+  try {
+    const response = await fetch("http://localhost:8000/api/attempts", {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to fetch attempts");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Fetch Attempts Error:", error);
+    return [];
+  }
+};
+
+export const fetchAttemptById = async (attemptId: string) => {
+  try {
+    const response = await fetch(`http://localhost:8000/api/attempts/${attemptId}`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to fetch attempt details");
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Fetch Attempt ${attemptId} Error:`, error);
+    return null;
+  }
+};
+
 /**
  * Converts a file from an input field into a Gemini-friendly Base64 string.
  */
