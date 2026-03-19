@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { fetchAttemptById } from "../../utilis/helper";
-import LatexRenderer from "../../components/LatexRenderer";
+import { fetchAttemptById } from "../../../(dashboard)/utilis/helper";
+import LatexRenderer from "../../../(dashboard)/components/LatexRenderer";
 import Link from "next/link";
-import Spinner from "../../components/Spinner";
+import Spinner from "../../../(dashboard)/components/Spinner";
 
 function scorePill(score: number) {
   if (score >= 70) return "bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-400";
@@ -21,11 +21,10 @@ function marksPill(awarded: number, total: number) {
   return "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-400";
 }
 
-// 1. SAFE DATE FORMATTER
 function safeFormatDate(dateInput?: string | Date) {
   if (!dateInput) return "Recently completed";
   const d = new Date(dateInput);
-  if (isNaN(d.getTime())) return "Recently completed"; // Catch the "Invalid Date" bug
+  if (isNaN(d.getTime())) return "Recently completed";
   return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
 }
 
@@ -36,7 +35,7 @@ const formatMap: Record<string, string> = {
   MATH: "Maths",
 };
 
-export default function AttemptDetailPage() {
+export default function PublicAttemptDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(true);
   const [attempt, setAttempt] = useState<any>(null);
@@ -56,7 +55,7 @@ export default function AttemptDetailPage() {
     return (
       <div className="flex flex-col items-center justify-center py-24 text-center">
         <p className="text-zinc-500">Attempt not found.</p>
-        <Link href="/attempts" className="mt-4 text-sm underline">Back to Attempts</Link>
+        <Link href="/" className="mt-4 text-sm underline">Back to Home</Link>
       </div>
     );
   }
@@ -75,12 +74,11 @@ export default function AttemptDetailPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      {/* Back */}
       <Link
-        href="/attempts"
+        href="/"
         className="mb-6 inline-flex items-center gap-1.5 text-sm text-zinc-500 hover:text-black dark:hover:text-white"
       >
-        ← Attempts
+        ← Back to Home
       </Link>
 
       {/* Score card */}
@@ -100,7 +98,7 @@ export default function AttemptDetailPage() {
             </div>
             <p className="mt-0.5 text-xs text-zinc-400">
               {safeFormatDate(attempt.createdAt)}
-              {attempt.quiz?.isPublic && attempt.studentName && <span> · by <span className="font-medium text-zinc-600 dark:text-zinc-300">{attempt.studentName}</span></span>}
+              {attempt.studentName && <span> · by <span className="font-medium text-zinc-600 dark:text-zinc-300">{attempt.studentName}</span></span>}
             </p>
             <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
               <span className="font-semibold text-black dark:text-white">{totalAwarded}</span>
@@ -133,12 +131,11 @@ export default function AttemptDetailPage() {
           const userAnswer = q.userAnswer || (isMaths ? "[Image Uploaded]" : "");
           const explanation = q.explanation || "";
 
-          // Safe parsing for options array (handles Prisma JSON stringification)
           let optionsArr: string[] = [];
           if (Array.isArray(q.options)) {
             optionsArr = q.options;
-          } else if (typeof q.options === 'string') {
-            try { optionsArr = JSON.parse(q.options); } catch(e) {}
+          } else if (typeof q.options === "string") {
+            try { optionsArr = JSON.parse(q.options); } catch {}
           }
 
           return (
@@ -160,7 +157,6 @@ export default function AttemptDetailPage() {
                 <LatexRenderer text={questionText} />
               </p>
 
-              {/* Maths */}
               {isMaths && (
                 <div className="space-y-2">
                   {q.userSteps && (
@@ -202,7 +198,6 @@ export default function AttemptDetailPage() {
                 </div>
               )}
 
-              {/* Essay */}
               {isEssay && (
                 <div className="space-y-2">
                   <div className={`rounded-lg px-4 py-3 text-sm ${markRatio >= 0.7 ? "bg-green-50 dark:bg-green-950/40" : "bg-amber-50 dark:bg-amber-950/40"}`}>
@@ -224,20 +219,15 @@ export default function AttemptDetailPage() {
                 </div>
               )}
 
-              {/* MCQ & Subjective */}
               {!isMaths && !isEssay && (
                 <div className="space-y-2">
-                  
-                  {/* 2. THE NEW MCQ OPTIONS RENDERER */}
                   {optionsArr.length > 0 ? (
                     <div className="mt-4 space-y-2">
                       {optionsArr.map((opt: string, optIdx: number) => {
                         const label = String.fromCharCode(65 + optIdx);
                         const isUserChoice = (userAnswer || "").toUpperCase() === label;
-                        
-                        // Check if this option is the correct one (handling both raw text and single letter formats)
-                        const isCorrectChoice = 
-                          (correctAnswer.length === 1 && correctAnswer.toUpperCase() === label) || 
+                        const isCorrectChoice =
+                          (correctAnswer.length === 1 && correctAnswer.toUpperCase() === label) ||
                           (opt.trim().toLowerCase() === correctAnswer.trim().toLowerCase());
 
                         let optClass = "border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-800/50";
@@ -257,8 +247,6 @@ export default function AttemptDetailPage() {
                               {label}
                             </span>
                             <div className="flex-1"><LatexRenderer text={opt} /></div>
-                            
-                            {/* Badges indicating user choice vs correct answer */}
                             <div className="flex shrink-0 gap-2">
                               {isUserChoice && !isCorrectChoice && (
                                 <span className="rounded-md bg-red-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-red-700 dark:bg-red-900/50 dark:text-red-400">Your Answer</span>
@@ -272,7 +260,6 @@ export default function AttemptDetailPage() {
                       })}
                     </div>
                   ) : (
-                    /* Fallback for Subjective (which has no options array) */
                     <>
                       <div className={`rounded-lg px-4 py-2.5 text-sm ${isFullyCorrect ? "bg-green-50 dark:bg-green-950/40" : "bg-red-50 dark:bg-red-950/40"}`}>
                         <p className="mb-0.5 text-xs font-semibold text-zinc-400">Your answer</p>
@@ -291,7 +278,7 @@ export default function AttemptDetailPage() {
                     </>
                   )}
 
-                  {explanation && quizType !== 'MCQ' && (
+                  {explanation && quizType !== "MCQ" && (
                     <div className="mt-3 rounded-lg border border-zinc-100 bg-zinc-50 px-4 py-3 dark:border-zinc-800 dark:bg-zinc-800">
                       <p className="mb-1 text-xs font-semibold text-zinc-400">Feedback</p>
                       <p className="text-sm text-zinc-600 dark:text-zinc-400">{explanation}</p>

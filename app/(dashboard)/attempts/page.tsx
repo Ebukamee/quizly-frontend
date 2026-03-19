@@ -60,8 +60,8 @@ export default function AttemptsPage() {
       ) : (
         <div className="rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
           {/* Table header — desktop */}
-          <div className="hidden border-b border-zinc-100 px-5 py-3 dark:border-zinc-800 sm:grid sm:grid-cols-[1fr_auto_auto_auto] sm:gap-4">
-            {["Subject & Quiz", "Type", "Score", "Date"].map((h) => (
+          <div className="hidden border-b border-zinc-100 px-5 py-3 dark:border-zinc-800 sm:grid sm:grid-cols-[1fr_auto_auto_auto_auto] sm:gap-4">
+            {["Subject & Quiz", "Type", "Visibility", "Score", "Date"].map((h) => (
               <p key={h} className="text-xs font-semibold uppercase tracking-widest text-zinc-400">{h}</p>
             ))}
           </div>
@@ -71,14 +71,20 @@ export default function AttemptsPage() {
               <li key={a.id}>
                 <Link
                   href={`/attempts/${a.id}`}
-                  className="flex items-center justify-between px-3 py-3 transition-all duration-150 hover:bg-zinc-50 hover:pl-4 sm:px-5 sm:py-4 sm:hover:pl-6 dark:hover:bg-zinc-800/50 sm:grid sm:grid-cols-[1fr_auto_auto_auto] sm:gap-4"
+                  className="flex items-center justify-between px-3 py-3 transition-all duration-150 hover:bg-zinc-50 hover:pl-4 sm:px-5 sm:py-4 sm:hover:pl-6 dark:hover:bg-zinc-800/50 sm:grid sm:grid-cols-[1fr_auto_auto_auto_auto] sm:gap-4"
                 >
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-black dark:text-white">{a.quiz?.title || "Untitled Quiz"}</p>
+                    <p className="truncate text-sm font-medium text-black dark:text-white">
+                      {a.quiz?.title || "Untitled Quiz"}
+                      {a.quiz?.isPublic && a.studentName && <span className="ml-2 text-xs font-normal text-zinc-400">by {a.studentName}</span>}
+                    </p>
                     <p className="text-xs text-zinc-400">{a.quiz?.subject?.name || "General"}</p>
                   </div>
                   <span className="hidden rounded-md border border-zinc-200 px-2.5 py-0.5 text-xs text-zinc-500 dark:border-zinc-700 dark:text-zinc-400 sm:inline-flex">
                     {formatMap[a.quizType] || a.quizType || "Standard"}
+                  </span>
+                  <span className={`hidden rounded-md border px-2.5 py-0.5 text-xs font-medium sm:inline-flex ${a.quiz?.isPublic ? "border-green-200 bg-green-50 text-green-600 dark:border-green-800 dark:bg-green-900/30 dark:text-green-400" : "border-zinc-200 bg-zinc-50 text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800"}`}>
+                    {a.quiz?.isPublic ? "Public" : "Private"}
                   </span>
                   <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ${scorePill(a.scorePercent ?? a.totalScore ?? 0)}`}>
                     {/* Fallback to totalScore if scorePercent is missing for older records */}

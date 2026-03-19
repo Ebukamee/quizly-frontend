@@ -127,7 +127,7 @@ export default function QuizPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {userQuizzes.length === 0 ? (
             <div className="col-span-full rounded-xl border border-dashed border-zinc-200 py-12 text-center text-zinc-500 dark:border-zinc-800">
-              You haven't generated any quizzes yet. Click "Create Quiz" to get started!
+              You haven&apos;t generated any quizzes yet. Click &quot;Create Quiz&quot; to get started!
             </div>
           ) : (
             userQuizzes.map((q) => (
@@ -148,7 +148,6 @@ export default function QuizPage() {
                     >
                       <HugeiconsIcon icon={MoreVerticalIcon} size={16} />
                     </button>
-
                     {openMenuId === q.id && (
                       <div className="absolute right-0 top-full z-20 mt-1 w-32 rounded-xl border border-zinc-200 bg-white p-1.5 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
                         <button
@@ -164,7 +163,7 @@ export default function QuizPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className={`rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-xs font-medium dark:border-zinc-700 dark:bg-zinc-800 ${formatColor[q.type] || "text-zinc-500"}`}>
-                      {q.type}
+                      {q.type === "SUBJECTIVE" ? "SUB" : q.type}
                     </span>
                     <span className={`rounded-md border px-2 py-0.5 text-xs font-medium ${q.isPublic ? "border-green-200 bg-green-50 text-green-600 dark:border-green-800 dark:bg-green-900/30 dark:text-green-400" : "border-zinc-200 bg-zinc-50 text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800"}`}>
                       {q.isPublic ? "Public" : "Private"}

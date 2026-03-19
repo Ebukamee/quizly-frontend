@@ -265,8 +265,7 @@ export default function TakeQuizPage() {
           };
         }));
 
-        // CRITICAL: Passing 'Student' as the name to match backend req.body expectation
-        const result = await submitAttempt(id as string, formattedAnswers, "Student");
+        const result = await submitAttempt(id as string, formattedAnswers);
         
         if (elapsedRef.current) clearInterval(elapsedRef.current);
         clearSession();
@@ -302,7 +301,7 @@ export default function TakeQuizPage() {
       </div>
 
       <div className="mb-2 flex items-center justify-between">
-        <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">Q {current + 1} of {quiz.questions.length}</p>
+        <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">{`Q ${current + 1} of ${quiz.questions.length}`}</p>
         <div className="flex items-center gap-1.5 text-xs font-semibold tabular-nums text-zinc-500 dark:text-zinc-400">
           <HugeiconsIcon icon={Clock01Icon} size={12} />
           {formatTime(elapsed)}
@@ -320,6 +319,7 @@ export default function TakeQuizPage() {
             {quiz.isPublic ? "Public" : "Private"}
           </span>
         </div>
+
         <p className="mb-6 text-base font-medium leading-snug text-black dark:text-white"><LatexRenderer text={question.text} /></p>
 
         {isMCQ && question.options && (
