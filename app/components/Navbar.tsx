@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSession, signOut } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 const navLinks = [
   { label: 'Home', href: '/' },
@@ -13,6 +15,15 @@ const navLinks = [
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { data: session } = useSession();
+  const router = useRouter();
+  const isLoggedIn = !!session?.user;
+
+  const handleSignOut = async () => {
+    setMenuOpen(false);
+    await signOut();
+    router.push("/login");
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-black/10 bg-white/80 backdrop-blur-xl dark:border-white/10 dark:bg-black/80">
@@ -59,18 +70,37 @@ export default function Navbar() {
 
         {/* Desktop CTA */}
         <div className="hidden items-center gap-4 md:flex">
-          <Link
-            href="/login"
-            className="text-sm font-medium text-zinc-500 transition-colors hover:text-black dark:text-zinc-400 dark:hover:text-white"
-          >
-            Sign in
-          </Link>
-          <Link
-            href="/upload"
-            className="inline-flex h-9 items-center rounded-full bg-black px-5 text-sm font-semibold text-white transition-all duration-200 hover:bg-zinc-800 active:scale-[0.97] dark:bg-white dark:text-black dark:hover:bg-zinc-100"
-          >
-            Get Started
-          </Link>
+          {isLoggedIn ? (
+            <>
+              <Link
+                href="/dashboard"
+                className="text-sm font-medium text-zinc-500 transition-colors hover:text-black dark:text-zinc-400 dark:hover:text-white"
+              >
+                Dashboard
+              </Link>
+              <button
+                onClick={handleSignOut}
+                className="text-sm font-medium text-zinc-500 transition-colors hover:text-red-500 dark:text-zinc-400 dark:hover:text-red-400"
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                className="text-sm font-medium text-zinc-500 transition-colors hover:text-black dark:text-zinc-400 dark:hover:text-white"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="/upload"
+                className="inline-flex h-9 items-center rounded-full bg-black px-5 text-sm font-semibold text-white transition-all duration-200 hover:bg-zinc-800 active:scale-[0.97] dark:bg-white dark:text-black dark:hover:bg-zinc-100"
+              >
+                Get Started
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile menu button */}
@@ -111,20 +141,40 @@ export default function Navbar() {
             ))}
           </ul>
           <div className="mt-4 flex flex-col gap-3">
-            <Link
-              href="/login"
-              onClick={() => setMenuOpen(false)}
-              className="block rounded-lg px-4 py-2.5 text-center text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-white/10"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/upload"
-              onClick={() => setMenuOpen(false)}
-              className="flex items-center justify-center rounded-full bg-black py-2.5 text-sm font-semibold text-white dark:bg-white dark:text-black"
-            >
-              Get Started
-            </Link>
+            {isLoggedIn ? (
+              <>
+                <Link
+                  href="/dashboard"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center justify-center rounded-full bg-black py-2.5 text-sm font-semibold text-white dark:bg-white dark:text-black"
+                >
+                  Dashboard
+                </Link>
+                <button
+                  onClick={handleSignOut}
+                  className="block rounded-lg px-4 py-2.5 text-center text-sm font-medium text-red-500 transition-colors hover:bg-red-50 dark:hover:bg-red-950"
+                >
+                  Log out
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  onClick={() => setMenuOpen(false)}
+                  className="block rounded-lg px-4 py-2.5 text-center text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-white/10"
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/upload"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-center justify-center rounded-full bg-black py-2.5 text-sm font-semibold text-white dark:bg-white dark:text-black"
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
         </div>
       )}

@@ -18,6 +18,7 @@ type DataPoint = { label: string; value: number };
 type Props = {
   data: DataPoint[];
   title?: string;
+  suffix?: string;
 };
 
 const barColors = [
@@ -30,7 +31,7 @@ const barColors = [
   "#22c55e", // green
 ];
 
-export default function BarChart({ data, title }: Props) {
+export default function BarChart({ data, title, suffix = "quizzes" }: Props) {
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
@@ -77,7 +78,7 @@ export default function BarChart({ data, title }: Props) {
         usePointStyle: true,
         callbacks: {
           title: (items: { label: string }[]) => items[0]?.label ?? "",
-          label: (item: { raw: unknown }) => ` ${item.raw} quizzes`,
+          label: (item: { raw: unknown }) => ` ${item.raw}${suffix === "%" ? "%" : ` ${suffix}`}`,
         },
       },
     },

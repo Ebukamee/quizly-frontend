@@ -50,6 +50,12 @@ export default function PublicTakeQuizPage() {
       const fetchedQuiz = await fetchQuizById(id as string);
 
       if (fetchedQuiz) {
+        // Block private quizzes from being taken on public route
+        if (!fetchedQuiz.isPublic) {
+          router.replace("/");
+          return;
+        }
+
         let rawQuestions = [];
         if (fetchedQuiz.type === "MCQ") rawQuestions = fetchedQuiz.mcqQuestions;
         else if (fetchedQuiz.type === "SUBJECTIVE") rawQuestions = fetchedQuiz.subjectiveQuestions;

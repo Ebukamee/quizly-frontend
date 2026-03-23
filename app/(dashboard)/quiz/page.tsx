@@ -5,7 +5,7 @@ import Link from "next/link";
 import CreateQuizModal from "../components/CreateQuizModal";
 import Spinner from "../components/Spinner";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { PlusSignIcon, MoreVerticalIcon } from "@hugeicons/core-free-icons";
+import { PlusSignIcon, MoreVerticalIcon, Share01Icon } from "@hugeicons/core-free-icons";
 import { fetchUserSubjects, generateQuizRequest, fetchUserQuizzes, deleteQuizRequest } from "../utilis/helper";
 
 // Fallback color mapping for the DB enum types
@@ -25,6 +25,9 @@ export default function QuizPage() {
   const [deleteModal, setDeleteModal] = useState<{ isOpen: boolean; targetId?: string }>({ isOpen: false });
   const [generating, setGenerating] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "warning" | "success" | "error" } | null>(null);
+  const [filterSubject, setFilterSubject] = useState("all");
+  const [filterVisibility, setFilterVisibility] = useState<"all" | "public" | "private">("all");
+  const [filterType, setFilterType] = useState("all");
 
   const showToast = (message: string, type: "warning" | "success" | "error") => {
     setToast({ message, type });
@@ -61,9 +64,21 @@ export default function QuizPage() {
     }
   };
 
+  const handleShare = (e: React.MouseEvent, quizId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setOpenMenuId(null);
+    const publicUrl = `${window.location.origin}/public/quiz/${quizId}`;
+    navigator.clipboard.writeText(publicUrl).then(() => {
+      showToast("Public link copied to clipboard!", "success");
+    }).catch(() => {
+      showToast("Failed to copy link", "error");
+    });
+  };
+
   useEffect(() => {
     const loadData = async () => {
-      // Fetch both subjects and quizzes simultaneously 
+      // Fetch both subjects and quizzes simultaneously
       const [fetchedSubjects, fetchedQuizList] = await Promise.all([
         fetchUserSubjects(),
         fetchUserQuizzes()
@@ -105,6 +120,16 @@ export default function QuizPage() {
 
   if (loading) return <Spinner />;
 
+  const filteredQuizzes = userQuizzes.filter((q) => {
+    if (filterSubject !== "all" && (q.subject?.name || "General") !== filterSubject) return false;
+    if (filterVisibility === "public" && !q.isPublic) return false;
+    if (filterVisibility === "private" && q.isPublic) return false;
+    if (filterType !== "all" && q.type !== filterType) return false;
+    return true;
+  });
+
+  const subjectNames = [...new Set(userQuizzes.map((q) => q.subject?.name || "General"))].sort();
+
   return (
     <>
       <div className="mx-auto max-w-5xl">
@@ -112,7 +137,7 @@ export default function QuizPage() {
         <div className="mb-6 flex items-center justify-between">
           <div>
             <h1 className="font-display text-2xl font-bold tracking-tight text-black dark:text-white">Your Quizzes</h1>
-            <p className="mt-0.5 text-sm text-zinc-500">{userQuizzes.length} quizzes generated from your documents</p>
+            <p className="mt-0.5 text-sm text-zinc-500">{filteredQuizzes.length} of {userQuizzes.length} quizzes</p>
           </div>
           <button
             onClick={() => setModalOpen(true)}
@@ -123,14 +148,58 @@ export default function QuizPage() {
           </button>
         </div>
 
-        {/* Quiz cards — reference-style tall cards */}
+        {/* Filters */}
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          <select
+            value={filterSubject}
+            onChange={(e) => setFilterSubject(e.target.value)}
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm text-zinc-700 outline-none focus:border-black dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:focus:border-white"
+          >
+            <option value="all">All subjects</option>
+            {subjectNames.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+          <select
+            value={filterVisibility}
+            onChange={(e) => setFilterVisibility(e.target.value as "all" | "public" | "private")}
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm text-zinc-700 outline-none focus:border-black dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:focus:border-white"
+          >
+            <option value="all">All visibility</option>
+            <option value="public">Public</option>
+            <option value="private">Private</option>
+          </select>
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm text-zinc-700 outline-none focus:border-black dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:focus:border-white"
+          >
+            <option value="all">All types</option>
+            <option value="MCQ">MCQ</option>
+            <option value="SUBJECTIVE">Subjective</option>
+            <option value="THEORY">Essay</option>
+            <option value="MATH">Maths</option>
+          </select>
+          {(filterSubject !== "all" || filterVisibility !== "all" || filterType !== "all") && (
+            <button
+              onClick={() => { setFilterSubject("all"); setFilterVisibility("all"); setFilterType("all"); }}
+              className="text-xs font-medium text-zinc-400 hover:text-black dark:hover:text-white"
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
+
+        {/* Quiz cards */}
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {userQuizzes.length === 0 ? (
+          {filteredQuizzes.length === 0 ? (
             <div className="col-span-full rounded-xl border border-dashed border-zinc-200 py-12 text-center text-zinc-500 dark:border-zinc-800">
-              You haven&apos;t generated any quizzes yet. Click &quot;Create Quiz&quot; to get started!
+              {userQuizzes.length === 0
+                ? "You haven\u0027t generated any quizzes yet. Click \"Create Quiz\" to get started!"
+                : "No quizzes match your filters."}
             </div>
           ) : (
-            userQuizzes.map((q) => (
+            filteredQuizzes.map((q) => (
               <Link
                 key={q.id}
                 href={`/quiz/${q.id}`}
@@ -149,7 +218,16 @@ export default function QuizPage() {
                       <HugeiconsIcon icon={MoreVerticalIcon} size={16} />
                     </button>
                     {openMenuId === q.id && (
-                      <div className="absolute right-0 top-full z-20 mt-1 w-32 rounded-xl border border-zinc-200 bg-white p-1.5 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
+                      <div className="absolute right-0 top-full z-20 mt-1 w-36 rounded-xl border border-zinc-200 bg-white p-1.5 shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
+                        {q.isPublic && (
+                          <button
+                            onClick={(e) => handleShare(e, q.id)}
+                            className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                          >
+                            <HugeiconsIcon icon={Share01Icon} size={14} />
+                            Share
+                          </button>
+                        )}
                         <button
                           onClick={(e) => triggerDelete(e, q.id)}
                           className="flex w-full items-center justify-start rounded-lg px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 dark:hover:bg-red-500/10"

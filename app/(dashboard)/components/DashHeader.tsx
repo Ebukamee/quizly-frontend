@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   Menu01Icon,
@@ -11,6 +12,7 @@ import {
   Logout01Icon,
   SidebarLeft01Icon,
 } from "@hugeicons/core-free-icons";
+import { signOut, useSession } from "@/lib/auth-client";
 
 type Props = {
   title: string;
@@ -22,6 +24,21 @@ type Props = {
 export default function DashHeader({ title, onMenuClick, isCollapsed, onToggleCollapse }: Props) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const { data: session } = useSession();
+
+  const initials = (session?.user?.name || "U")
+    .split(" ")
+    .map((w: string) => w[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+
+  const handleSignOut = async () => {
+    setDropdownOpen(false);
+    await signOut();
+    router.push("/login");
+  };
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -71,7 +88,7 @@ export default function DashHeader({ title, onMenuClick, isCollapsed, onToggleCo
           className="flex h-8 w-8 items-center justify-center rounded-full bg-black text-xs font-bold text-white transition-opacity hover:opacity-80 dark:bg-white dark:text-black"
           aria-label="Profile menu"
         >
-          JD
+          {initials}
         </button>
 
         {dropdownOpen && (
@@ -95,7 +112,7 @@ export default function DashHeader({ title, onMenuClick, isCollapsed, onToggleCo
             <div className="my-1 border-t border-zinc-100 dark:border-zinc-800" />
             <button
               className="flex w-full items-center gap-2.5 px-4 py-2 text-sm text-red-500 hover:bg-zinc-50 dark:hover:bg-zinc-900"
-              onClick={() => setDropdownOpen(false)}
+              onClick={handleSignOut}
             >
               <HugeiconsIcon icon={Logout01Icon} size={14} />
               Log out

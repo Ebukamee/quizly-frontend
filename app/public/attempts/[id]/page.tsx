@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { fetchAttemptById } from "../../../(dashboard)/utilis/helper";
 import LatexRenderer from "../../../(dashboard)/components/LatexRenderer";
 import Link from "next/link";
@@ -37,17 +37,25 @@ const formatMap: Record<string, string> = {
 
 export default function PublicAttemptDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [attempt, setAttempt] = useState<any>(null);
 
   useEffect(() => {
     const load = async () => {
       const data = await fetchAttemptById(id as string);
-      if (data) setAttempt(data);
+      if (data) {
+        // Block private quiz attempts from being viewed on public route
+        if (!data.quiz?.isPublic) {
+          router.replace("/");
+          return;
+        }
+        setAttempt(data);
+      }
       setLoading(false);
     };
     load();
-  }, [id]);
+  }, [id, router]);
 
   if (loading) return <Spinner />;
 

@@ -228,7 +228,7 @@ export default function AttemptDetailPage() {
               {!isMaths && !isEssay && (
                 <div className="space-y-2">
                   
-                  {/* 2. THE NEW MCQ OPTIONS RENDERER */}
+                  {/* 2. THE  MCQ OPTIONS RENDERER */}
                   {optionsArr.length > 0 ? (
                     <div className="mt-4 space-y-2">
                       {optionsArr.map((opt: string, optIdx: number) => {

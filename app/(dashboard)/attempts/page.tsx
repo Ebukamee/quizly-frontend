@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { fetchUserAttempts } from "../utilis/helper";
 import Spinner from "../components/Spinner";
@@ -29,6 +29,9 @@ const formatMap: Record<string, string> = {
 export default function AttemptsPage() {
   const [loading, setLoading] = useState(true);
   const [attempts, setAttempts] = useState<any[]>([]);
+  const [filterSubject, setFilterSubject] = useState("all");
+  const [filterVisibility, setFilterVisibility] = useState<"all" | "public" | "private">("all");
+  const [filterType, setFilterType] = useState("all");
 
   useEffect(() => {
     const load = async () => {
@@ -44,18 +47,77 @@ export default function AttemptsPage() {
     load();
   }, []);
 
+  const subjectNames = useMemo(
+    () => [...new Set(attempts.map((a) => a.quiz?.subject?.name || "General"))].sort(),
+    [attempts]
+  );
+
+  const filteredAttempts = useMemo(() => {
+    return attempts.filter((a) => {
+      if (filterSubject !== "all" && (a.quiz?.subject?.name || "General") !== filterSubject) return false;
+      if (filterVisibility === "public" && !a.quiz?.isPublic) return false;
+      if (filterVisibility === "private" && a.quiz?.isPublic) return false;
+      if (filterType !== "all" && (a.quizType || "MCQ") !== filterType) return false;
+      return true;
+    });
+  }, [attempts, filterSubject, filterVisibility, filterType]);
+
   if (loading) return <Spinner />;
 
   return (
     <div className="mx-auto max-w-5xl">
       <div className="mb-6">
         <h1 className="font-display text-2xl font-bold tracking-tight text-black dark:text-white">Attempts</h1>
-        <p className="mt-0.5 text-sm text-zinc-500">{attempts.length} quiz attempts recorded</p>
+        <p className="mt-0.5 text-sm text-zinc-500">{filteredAttempts.length} of {attempts.length} attempts</p>
       </div>
 
-      {attempts.length === 0 ? (
+      {/* Filters */}
+      <div className="mb-4 flex flex-wrap items-center gap-2">
+        <select
+          value={filterSubject}
+          onChange={(e) => setFilterSubject(e.target.value)}
+          className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm text-zinc-700 outline-none focus:border-black dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:focus:border-white"
+        >
+          <option value="all">All subjects</option>
+          {subjectNames.map((s) => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
+        <select
+          value={filterVisibility}
+          onChange={(e) => setFilterVisibility(e.target.value as "all" | "public" | "private")}
+          className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm text-zinc-700 outline-none focus:border-black dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:focus:border-white"
+        >
+          <option value="all">All visibility</option>
+          <option value="public">Public</option>
+          <option value="private">Private</option>
+        </select>
+        <select
+          value={filterType}
+          onChange={(e) => setFilterType(e.target.value)}
+          className="rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-sm text-zinc-700 outline-none focus:border-black dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:focus:border-white"
+        >
+          <option value="all">All types</option>
+          <option value="MCQ">MCQ</option>
+          <option value="SUBJECTIVE">Subjective</option>
+          <option value="THEORY">Essay</option>
+          <option value="MATH">Maths</option>
+        </select>
+        {(filterSubject !== "all" || filterVisibility !== "all" || filterType !== "all") && (
+          <button
+            onClick={() => { setFilterSubject("all"); setFilterVisibility("all"); setFilterType("all"); }}
+            className="text-xs font-medium text-zinc-400 hover:text-black dark:hover:text-white"
+          >
+            Clear filters
+          </button>
+        )}
+      </div>
+
+      {filteredAttempts.length === 0 ? (
         <div className="rounded-xl border border-dashed border-zinc-200 py-12 text-center text-zinc-500 dark:border-zinc-800">
-          No attempts yet. Complete a quiz to see your results here!
+          {attempts.length === 0
+            ? "No attempts yet. Complete a quiz to see your results here!"
+            : "No attempts match your filters."}
         </div>
       ) : (
         <div className="rounded-xl border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
@@ -67,7 +129,7 @@ export default function AttemptsPage() {
           </div>
 
           <ul className="divide-y divide-zinc-100 dark:divide-zinc-800">
-            {attempts.map((a) => (
+            {filteredAttempts.map((a) => (
               <li key={a.id}>
                 <Link
                   href={`/attempts/${a.id}`}

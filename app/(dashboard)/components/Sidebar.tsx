@@ -2,14 +2,16 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { HugeiconsIcon } from "@hugeicons/react";
 import {
   DashboardSquare01Icon,
   Quiz01Icon,
   BookOpen01Icon,
   ChartLineData01Icon,
+  Logout01Icon,
 } from "@hugeicons/core-free-icons";
+import { signOut } from "@/lib/auth-client";
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: DashboardSquare01Icon },
@@ -26,6 +28,13 @@ type Props = {
 
 export default function Sidebar({ open, onClose, isCollapsed }: Props) {
   const pathname = usePathname();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    onClose();
+    await signOut();
+    router.push("/login");
+  };
 
   return (
     <>
@@ -77,7 +86,7 @@ export default function Sidebar({ open, onClose, isCollapsed }: Props) {
           })}
         </nav>
 
-        {/* Bottom: back to site */}
+        {/* Bottom */}
         <div className="shrink-0 border-t border-black/[0.06] p-3 dark:border-white/[0.06]">
           <Link
             href="/"
@@ -85,6 +94,13 @@ export default function Sidebar({ open, onClose, isCollapsed }: Props) {
           >
             {isCollapsed ? "←" : "← Back to site"}
           </Link>
+          <button
+            onClick={handleSignOut}
+            className={`group flex w-full items-center rounded-lg py-2 text-[13px] font-medium text-zinc-400 transition-all hover:text-red-500 ${isCollapsed ? "justify-center px-0" : "gap-3 px-3"}`}
+          >
+            <HugeiconsIcon icon={Logout01Icon} size={16} className="shrink-0" />
+            {!isCollapsed && <span>Log out</span>}
+          </button>
         </div>
       </aside>
     </>
