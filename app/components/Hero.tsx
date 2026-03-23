@@ -38,7 +38,7 @@ export default function Hero() {
               style={{ animationDelay: "240ms" }}
             >
               <Link
-                href="/upload"
+                href="/dashboard"
                 className="inline-flex h-11 items-center rounded-full bg-black px-6 text-sm font-semibold text-white transition-all hover:bg-zinc-800 active:scale-[0.97] dark:bg-white dark:text-black dark:hover:bg-zinc-100"
               >
                 Get Started

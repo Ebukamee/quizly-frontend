@@ -1,6 +1,8 @@
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "https://quizly-wr2f.onrender.com";
+
 export const fetchUserSubjects = async () => {
     try {
-        const response = await fetch("http://localhost:8000/api/subjects", {
+        const response = await fetch(`${API_URL}/api/subjects`, {
             method: "GET",
             // CRUCIAL: Sends the Better Auth cookie to the Express backend
             credentials: "include",
@@ -17,7 +19,7 @@ export const fetchUserSubjects = async () => {
 
 export const createSubject = async (subjectName: string) => {
     try {
-        const response = await fetch("http://localhost:8000/api/subjects", {
+        const response = await fetch(`${API_URL}/api/subjects`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -37,7 +39,7 @@ export const createSubject = async (subjectName: string) => {
 
 export const fetchSubjectById = async (id: string) => {
     try {
-        const response = await fetch(`http://localhost:8000/api/subjects/${id}`, {
+        const response = await fetch(`${API_URL}/api/subjects/${id}`, {
             method: "GET",
             // CRUCIAL: Sends the Better Auth cookie
             credentials: "include",
@@ -60,7 +62,7 @@ export const uploadDocument = async (file: File, subjectId: string) => {
         formData.append("subjectId", subjectId);
         formData.append("title", file.name);
 
-        const response = await fetch("http://localhost:8000/api/documents/upload", {
+        const response = await fetch(`${API_URL}/api/documents/upload`, {
             method: "POST",
             credentials: "include",
             // IMPORTANT: Do NOT set the 'Content-Type' header here. 
@@ -79,7 +81,7 @@ export const uploadDocument = async (file: File, subjectId: string) => {
 };
 export const deleteDocumentById = async (documentId: string) => {
     try {
-        const response = await fetch(`http://localhost:8000/api/documents/${documentId}`, {
+        const response = await fetch(`${API_URL}/api/documents/${documentId}`, {
             method: "DELETE",
             credentials: "include",
         });
@@ -97,7 +99,7 @@ export const deleteDocumentById = async (documentId: string) => {
 };
 export const deleteSubjectById = async (documentId: string) => {
     try {
-        const response = await fetch(`http://localhost:8000/api/subjects/${documentId}`, {
+        const response = await fetch(`${API_URL}/api/subjects/${documentId}`, {
             method: "DELETE",
             credentials: "include",
         });
@@ -125,7 +127,7 @@ export const generateQuizRequest = async (
   isPublic?: boolean
 ) => {
   try {
-    const response = await fetch("http://localhost:8000/api/quizzes/generate", {
+    const response = await fetch(`${API_URL}/api/quizzes/generate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -157,7 +159,7 @@ export const generateQuizRequest = async (
 
 export const fetchUserQuizzes = async () => {
   try {
-    const response = await fetch("http://localhost:8000/api/quizzes", {
+    const response = await fetch(`${API_URL}/api/quizzes`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -179,7 +181,7 @@ export const fetchUserQuizzes = async () => {
 
 export const fetchQuizById = async (quizId: string) => {
   try {
-    const response = await fetch(`http://localhost:8000/api/quizzes/${quizId}`, {
+    const response = await fetch(`${API_URL}/api/quizzes/${quizId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -201,7 +203,7 @@ export const fetchQuizById = async (quizId: string) => {
 
 export const deleteQuizRequest = async (quizId: string): Promise<boolean> => {
   try {
-    const response = await fetch(`http://localhost:8000/api/quizzes/${quizId}`, {
+    const response = await fetch(`${API_URL}/api/quizzes/${quizId}`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -228,7 +230,7 @@ export const deleteQuizRequest = async (quizId: string): Promise<boolean> => {
  */
 export const submitAttempt = async (quizId: string, answers: any[], studentName?: string) => {
   try {
-    const response = await fetch(`http://localhost:8000/api/attempts/${quizId}/submit`, {
+    const response = await fetch(`${API_URL}/api/attempts/${quizId}/submit`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -257,7 +259,7 @@ export const submitAttempt = async (quizId: string, answers: any[], studentName?
 
 export const fetchUserAttempts = async () => {
   try {
-    const response = await fetch("http://localhost:8000/api/attempts", {
+    const response = await fetch(`${API_URL}/api/attempts`, {
       method: "GET",
       credentials: "include",
     });
@@ -276,7 +278,7 @@ export const fetchUserAttempts = async () => {
 
 export const fetchAttemptById = async (attemptId: string) => {
   try {
-    const response = await fetch(`http://localhost:8000/api/attempts/${attemptId}`, {
+    const response = await fetch(`${API_URL}/api/attempts/${attemptId}`, {
       method: "GET",
       credentials: "include",
     });

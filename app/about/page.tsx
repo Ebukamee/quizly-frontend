@@ -147,7 +147,7 @@ export default function AboutPage() {
           </p>
           <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
             <Link
-              href="/upload"
+              href="/dashboard"
               className="inline-flex h-11 items-center rounded-full bg-white px-6 text-sm font-semibold text-black transition-all hover:bg-zinc-100 active:scale-[0.97]"
             >
               Get started free

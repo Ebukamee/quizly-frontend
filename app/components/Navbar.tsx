@@ -94,7 +94,7 @@ export default function Navbar() {
                 Sign in
               </Link>
               <Link
-                href="/upload"
+                href="/dashboard"
                 className="inline-flex h-9 items-center rounded-full bg-black px-5 text-sm font-semibold text-white transition-all duration-200 hover:bg-zinc-800 active:scale-[0.97] dark:bg-white dark:text-black dark:hover:bg-zinc-100"
               >
                 Get Started
@@ -167,7 +167,7 @@ export default function Navbar() {
                   Sign in
                 </Link>
                 <Link
-                  href="/upload"
+                  href="/dashboard"
                   onClick={() => setMenuOpen(false)}
                   className="flex items-center justify-center rounded-full bg-black py-2.5 text-sm font-semibold text-white dark:bg-white dark:text-black"
                 >
