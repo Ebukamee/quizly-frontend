@@ -8,13 +8,13 @@ import { signIn } from "@/lib/auth-client";
 
 export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const callbackURL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000/dashboard";
   const handleGoogleLogin = async () => {
     setIsLoading(true);
     try {
       await signIn.social({
         provider: "google",
-        // This is where Next.js will take them AFTER a successful login
-        callbackURL: "http://localhost:3000/dashboard",
+        callbackURL: callbackURL,
       });
     } catch (error) {
       console.error("Login failed:", error);
