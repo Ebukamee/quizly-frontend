@@ -2,17 +2,9 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-
-  // Exclude /public/* routes — they don't require auth
-  if (pathname.startsWith("/public")) return NextResponse.next();
-
-  // Dashboard routes — require auth cookie
-  const token = request.cookies.get("better-auth.session_token");
-  if (!token) {
-    return NextResponse.redirect(new URL("/login", request.url));
-  }
-
+  // Auth is handled client-side in the dashboard layout.
+  // Cross-domain cookie (Render backend vs Vercel frontend) means
+  // server-side cookie checks don't work here.
   return NextResponse.next();
 }
 
