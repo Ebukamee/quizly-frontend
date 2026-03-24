@@ -296,18 +296,34 @@ export const fetchAttemptById = async (attemptId: string) => {
 };
 
 /**
- * Converts a file from an input field into a Gemini-friendly Base64 string.
+ * Compresses an image file and returns a Gemini-friendly Base64 string.
+ * Max dimension: 1600px. JPEG quality: 0.82. Always outputs image/jpeg.
  */
 export const prepareImageForAI = (file: File): Promise<{ base64: string; mimeType: string }> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      const result = reader.result as string;
-      const [prefix, base64] = result.split(',');
-      const mimeType = prefix.split(':')[1].split(';')[0];
-      resolve({ base64, mimeType });
+      const img = new Image();
+      img.onload = () => {
+        const MAX = 1600;
+        let { width, height } = img;
+        if (width > MAX || height > MAX) {
+          if (width > height) { height = Math.round((height * MAX) / width); width = MAX; }
+          else { width = Math.round((width * MAX) / height); height = MAX; }
+        }
+        const canvas = document.createElement("canvas");
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d")!;
+        ctx.drawImage(img, 0, 0, width, height);
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.82);
+        const base64 = dataUrl.split(",")[1];
+        resolve({ base64, mimeType: "image/jpeg" });
+      };
+      img.onerror = reject;
+      img.src = reader.result as string;
     };
-    reader.onerror = (error) => reject(error);
+    reader.onerror = reject;
   });
 };
