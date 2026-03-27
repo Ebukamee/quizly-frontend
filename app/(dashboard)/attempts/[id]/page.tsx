@@ -173,7 +173,7 @@ export default function AttemptDetailPage() {
                       </div>
                     </div>
                   )}
-                  <div className={`rounded-lg px-4 py-2.5 text-sm ${markRatio >= 1 ? "bg-green-50 dark:bg-green-950/40" : markRatio >= 0.5 ? "bg-amber-50 dark:bg-amber-950/40" : "bg-red-50 dark:bg-red-950/40"}`}>
+                  <div className={`rounded-lg px-4 py-2.5 text-sm ${q.isFinalAnswerCorrect ? "bg-green-50 dark:bg-green-950/40" : "bg-red-50 dark:bg-red-950/40"}`}>
                     <p className="mb-0.5 text-xs font-semibold text-zinc-400">Your answer</p>
                     <p className="text-zinc-800 dark:text-zinc-200"><LatexRenderer text={userAnswer} /></p>
                   </div>
@@ -291,9 +291,9 @@ export default function AttemptDetailPage() {
                     </>
                   )}
 
-                  {explanation && quizType !== 'MCQ' && (
+                  {explanation && (
                     <div className="mt-3 rounded-lg border border-zinc-100 bg-zinc-50 px-4 py-3 dark:border-zinc-800 dark:bg-zinc-800">
-                      <p className="mb-1 text-xs font-semibold text-zinc-400">Feedback</p>
+                      <p className="mb-1 text-xs font-semibold text-zinc-400">{quizType === 'MCQ' ? 'Explanation' : 'Feedback'}</p>
                       <p className="text-sm text-zinc-600 dark:text-zinc-400">{explanation}</p>
                     </div>
                   )}

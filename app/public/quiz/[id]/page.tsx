@@ -394,7 +394,7 @@ export default function PublicTakeQuizPage() {
                   Upload an image of your handwritten answer. Ensure your{" "}
                   <span className="font-semibold text-zinc-700 dark:text-zinc-300">final answer is clearly labeled</span>.
                 </p>
-                <input type="file" ref={mathsFileRef} onChange={handleMathsFileSelect} className="hidden" accept=".png,.jpg,.jpeg,.heic,.pdf" />
+                <input type="file" ref={mathsFileRef} onChange={handleMathsFileSelect} className="hidden" accept=".png,.jpg,.jpeg,.webp" />
                 {currentMaths.dataUrl || currentMaths.fileName ? (
                   <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 dark:border-zinc-700 dark:bg-zinc-800">
                     {currentMaths.dataUrl && currentMaths.dataUrl.startsWith("data:image/") && (
@@ -433,7 +433,7 @@ export default function PublicTakeQuizPage() {
                   >
                     <HugeiconsIcon icon={Upload01Icon} size={24} className="mb-2 text-zinc-400" />
                     <p className="text-sm text-zinc-500">Drag & drop your answer here or click to browse</p>
-                    <p className="mt-1 text-xs text-zinc-400">PNG, JPG, HEIC, or PDF</p>
+                    <p className="mt-1 text-xs text-zinc-400">PNG, JPG, JPEG, or WEBP</p>
                   </div>
                 )}
               </div>

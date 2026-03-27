@@ -351,7 +351,7 @@ export default function TakeQuizPage() {
         {isMaths && (
           <div className="space-y-3">
             <p className="text-xs text-zinc-500 dark:text-zinc-400">Upload images of your handwritten answer. Ensure your <span className="font-semibold text-zinc-700 dark:text-zinc-300">final answer is clearly labeled</span>.</p>
-            <input type="file" ref={mathsFileRef} onChange={handleMathsFileSelect} className="hidden" accept=".png,.jpg,.jpeg,.heic,.pdf" multiple />
+            <input type="file" ref={mathsFileRef} onChange={handleMathsFileSelect} className="hidden" accept=".png,.jpg,.jpeg,.webp" multiple />
 
             {/* Uploaded images list */}
             {currentMaths.images.length > 0 && (
@@ -386,7 +386,7 @@ export default function TakeQuizPage() {
             >
               <HugeiconsIcon icon={Upload01Icon} size={20} className="mb-1.5 text-zinc-400" />
               <p className="text-sm text-zinc-500">{currentMaths.images.length > 0 ? "Add another image" : "Drag & drop or click to browse"}</p>
-              <p className="mt-0.5 text-xs text-zinc-400">PNG, JPG, HEIC, or PDF · max 4 MB each</p>
+              <p className="mt-0.5 text-xs text-zinc-400">PNG, JPG, JPEG, or WEBP · max 4 MB each</p>
             </div>
           </div>
         )}
