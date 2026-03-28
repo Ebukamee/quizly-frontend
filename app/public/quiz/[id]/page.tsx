@@ -313,7 +313,7 @@ export default function PublicTakeQuizPage() {
       </div>
 
       <div className="rounded-xl border border-zinc-200 bg-white p-4 sm:p-6 dark:border-zinc-800 dark:bg-zinc-900">
-        <div className="mb-4 flex gap-2">
+        <div className="mb-4 flex flex-wrap gap-2">
           <span className="rounded-md border border-zinc-200 bg-zinc-50 px-2.5 py-0.5 text-xs text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800">{quiz.subjectName}</span>
           <span className="rounded-md border border-zinc-200 bg-zinc-50 px-2.5 py-0.5 text-xs text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800">{quiz.format}</span>
           <span className="rounded-md border border-green-200 bg-green-50 px-2.5 py-0.5 text-xs font-medium text-green-600 dark:border-green-800 dark:bg-green-900/30 dark:text-green-400">
@@ -350,20 +350,20 @@ export default function PublicTakeQuizPage() {
                     key={opt.label}
                     type="button"
                     onClick={() => handleAnswer(opt.label)}
-                    className={`flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm transition-colors ${
+                    className={`flex w-full items-start gap-2 rounded-lg px-3 py-2.5 text-left text-sm transition-colors sm:items-center sm:gap-3 sm:px-4 sm:py-3 ${
                       currentAnswer === opt.label
                         ? "bg-black text-white dark:bg-white dark:text-black"
                         : "border border-zinc-200 text-zinc-700 hover:border-zinc-400 dark:border-zinc-700 dark:text-zinc-300 dark:hover:border-zinc-500"
                     }`}
                   >
                     <span
-                      className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[10px] font-bold ${
+                      className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[10px] font-bold sm:mt-0 ${
                         currentAnswer === opt.label ? "border-white/30 dark:border-black/30" : "border-zinc-300 dark:border-zinc-600"
                       }`}
                     >
                       {opt.label}
                     </span>
-                    <LatexRenderer text={opt.text} />
+                    <span className="min-w-0 break-words"><LatexRenderer text={opt.text} /></span>
                   </button>
                 ))}
               </div>

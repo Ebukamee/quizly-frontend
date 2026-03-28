@@ -95,8 +95,8 @@ export default function PublicAttemptDetailPage() {
           <div className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-xl font-display text-xl font-bold sm:h-20 sm:w-20 sm:text-2xl ${scorePill(calculatedPercent)}`}>
             {calculatedPercent}%
           </div>
-          <div>
-            <h2 className="font-display text-base font-bold text-black sm:text-lg dark:text-white">{attempt.quiz?.title || "Untitled Quiz"}</h2>
+          <div className="min-w-0">
+            <h2 className="truncate font-display text-base font-bold text-black sm:text-lg dark:text-white">{attempt.quiz?.title || "Untitled Quiz"}</h2>
             <div className="mt-1.5 flex flex-wrap items-center gap-2">
               <span className="rounded-md border border-zinc-200 bg-zinc-50 px-2.5 py-0.5 text-xs text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800">{attempt.quiz?.subject?.name || "General"}</span>
               <span className="rounded-md border border-zinc-200 bg-zinc-50 px-2.5 py-0.5 text-xs text-zinc-500 dark:border-zinc-700 dark:bg-zinc-800">{format}</span>
@@ -250,17 +250,17 @@ export default function PublicAttemptDetailPage() {
                         }
 
                         return (
-                          <div key={optIdx} className={`flex w-full items-center gap-3 rounded-lg border px-4 py-3 text-sm ${optClass}`}>
-                            <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[10px] font-bold ${labelClass}`}>
+                          <div key={optIdx} className={`flex w-full items-start gap-2 rounded-lg border px-3 py-2.5 text-sm sm:items-center sm:gap-3 sm:px-4 sm:py-3 ${optClass}`}>
+                            <span className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-[10px] font-bold sm:mt-0 ${labelClass}`}>
                               {label}
                             </span>
-                            <div className="flex-1"><LatexRenderer text={opt} /></div>
-                            <div className="flex shrink-0 gap-2">
+                            <div className="min-w-0 flex-1 break-words"><LatexRenderer text={opt} /></div>
+                            <div className="flex shrink-0 gap-1 sm:gap-2">
                               {isUserChoice && !isCorrectChoice && (
-                                <span className="rounded-md bg-red-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-red-700 dark:bg-red-900/50 dark:text-red-400">Your Answer</span>
+                                <span className="rounded-md bg-red-100 px-1.5 py-0.5 text-[9px] font-bold uppercase text-red-700 sm:px-2 sm:text-[10px] sm:tracking-wider dark:bg-red-900/50 dark:text-red-400">You</span>
                               )}
                               {isCorrectChoice && (
-                                <span className="rounded-md bg-green-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-green-700 dark:bg-green-900/50 dark:text-green-400">Correct Answer</span>
+                                <span className="rounded-md bg-green-100 px-1.5 py-0.5 text-[9px] font-bold uppercase text-green-700 sm:px-2 sm:text-[10px] sm:tracking-wider dark:bg-green-900/50 dark:text-green-400">Correct</span>
                               )}
                             </div>
                           </div>
@@ -286,9 +286,9 @@ export default function PublicAttemptDetailPage() {
                     </>
                   )}
 
-                  {explanation && quizType !== "MCQ" && (
+                  {explanation && (
                     <div className="mt-3 rounded-lg border border-zinc-100 bg-zinc-50 px-4 py-3 dark:border-zinc-800 dark:bg-zinc-800">
-                      <p className="mb-1 text-xs font-semibold text-zinc-400">Feedback</p>
+                      <p className="mb-1 text-xs font-semibold text-zinc-400">{quizType === 'MCQ' ? 'Explanation' : 'Feedback'}</p>
                       <p className="text-sm text-zinc-600 dark:text-zinc-400">{explanation}</p>
                     </div>
                   )}

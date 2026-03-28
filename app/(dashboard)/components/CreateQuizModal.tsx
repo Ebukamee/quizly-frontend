@@ -142,15 +142,15 @@ export default function CreateQuizModal({ isOpen, onClose, subjects, onGenerate 
               <div className="max-h-28 overflow-y-auto rounded-lg border border-zinc-200 p-2 dark:border-zinc-700">
                 {docs.map((d) => (
                   <label key={d.id} className="flex cursor-pointer items-center gap-2 py-1 text-sm text-zinc-600 transition-colors hover:text-black dark:text-zinc-400 dark:hover:text-white">
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       disabled={isGenerating}
                       checked={selectedDocs.includes(d.id)}
                       onChange={(e) => {
                         if (e.target.checked) setSelectedDocs([...selectedDocs, d.id]);
                         else setSelectedDocs(selectedDocs.filter(id => id !== d.id));
                       }}
-                      className="rounded border-zinc-300 accent-black dark:border-zinc-600 dark:accent-white"
+                      className="rounded border-zinc-300 accent-black dark:border-zinc-600"
                     />
                     <span className="truncate">{d.title}</span>
                   </label>

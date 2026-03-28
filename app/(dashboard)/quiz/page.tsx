@@ -238,8 +238,8 @@ export default function QuizPage() {
                     )}
                   </div>
                 </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex min-w-0 flex-wrap items-center gap-1.5">
                     <span className={`rounded-md border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-xs font-medium dark:border-zinc-700 dark:bg-zinc-800 ${formatColor[q.type] || "text-zinc-500"}`}>
                       {q.type === "SUBJECTIVE" ? "SUB" : q.type}
                     </span>
@@ -248,7 +248,7 @@ export default function QuizPage() {
                     </span>
                     <span className="text-xs text-zinc-400">{q.questionCount} Qs</span>
                   </div>
-                  <span className="text-xs text-zinc-400">
+                  <span className="hidden shrink-0 text-xs text-zinc-400 sm:inline">
                     {new Date(q.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                   </span>
                 </div>

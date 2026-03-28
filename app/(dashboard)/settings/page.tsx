@@ -81,9 +81,9 @@ export default function SettingsPage() {
           <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">Appearance</p>
         </div>
         <div className="px-5 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
-              <HugeiconsIcon icon={isDark ? Moon02Icon : Sun03Icon} size={16} className="text-zinc-400" />
+              <HugeiconsIcon icon={isDark ? Moon02Icon : Sun03Icon} size={16} className="shrink-0 text-zinc-400" />
               <div>
                 <p className="text-sm font-medium text-black dark:text-white">Theme</p>
                 <p className="text-xs text-zinc-500">{isDark ? "Dark" : "Light"} mode is active</p>
@@ -91,7 +91,7 @@ export default function SettingsPage() {
             </div>
             <button
               onClick={toggleTheme}
-              className="rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              className="shrink-0 self-start rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-50 sm:self-auto dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
             >
               Switch to {isDark ? "light" : "dark"}
             </button>
@@ -116,7 +116,7 @@ export default function SettingsPage() {
           </div>
 
           {/* Sign out */}
-          <div className="flex items-center justify-between px-5 py-4">
+          <div className="flex flex-col gap-3 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <HugeiconsIcon icon={Logout01Icon} size={16} className="shrink-0 text-zinc-400" />
               <div>
@@ -126,7 +126,7 @@ export default function SettingsPage() {
             </div>
             <button
               onClick={handleSignOut}
-              className="rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
+              className="shrink-0 self-start rounded-lg border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-700 transition-colors hover:bg-zinc-50 sm:self-auto dark:border-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-800"
             >
               Sign out
             </button>
@@ -140,7 +140,7 @@ export default function SettingsPage() {
           <p className="text-xs font-semibold uppercase tracking-widest text-red-400">Danger zone</p>
         </div>
         <div className="px-5 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <HugeiconsIcon icon={Delete02Icon} size={16} className="shrink-0 text-red-400" />
               <div>
@@ -149,7 +149,7 @@ export default function SettingsPage() {
               </div>
             </div>
             {showDeleteConfirm ? (
-              <div className="flex items-center gap-2">
+              <div className="flex shrink-0 items-center gap-2 self-start sm:self-auto">
                 <button
                   onClick={handleDeleteAccount}
                   disabled={deleting}
@@ -167,7 +167,7 @@ export default function SettingsPage() {
             ) : (
               <button
                 onClick={() => setShowDeleteConfirm(true)}
-                className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950"
+                className="shrink-0 self-start rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 transition-colors hover:bg-red-50 sm:self-auto dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950"
               >
                 Delete
               </button>
