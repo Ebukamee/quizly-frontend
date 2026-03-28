@@ -29,10 +29,22 @@
   --foreground: #ededed;
 }
 
+/* Prevent flex/grid children from overflowing their container */
+*,
+*::before,
+*::after {
+  min-width: 0;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Ensure media elements respect container bounds */
+img, video, canvas, svg {
+  max-width: 100%;
 }
 
 /* Allow wide KaTeX formulas to scroll horizontally within their container */
