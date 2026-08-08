@@ -30,6 +30,7 @@ export default function PublicTakeQuizPage() {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [mathsAnswers, setMathsAnswers] = useState<Record<string, MathsAnswer>>({});
+  const [essayAnswerModes, setEssayAnswerModes] = useState<Record<string, "typed" | "upload">>({});
   const [studentName, setStudentName] = useState("");
   const mathsFileRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -182,9 +183,10 @@ export default function PublicTakeQuizPage() {
 
   const currentAnswer = answers[question?.id] ?? "";
   const currentMaths = mathsAnswers[question?.id] ?? { fileName: "", dataUrl: "" };
+  const essayAnswerMode = essayAnswerModes[question?.id] ?? "typed";
 
   function isAnswered(qId: string) {
-    if (isMaths) return !!mathsAnswers[qId]?.dataUrl;
+    if (isMaths || (isEssay && essayAnswerModes[qId] === "upload")) return !!mathsAnswers[qId]?.dataUrl;
     return (answers[qId] ?? "").trim().length > 0;
   }
 
@@ -192,6 +194,10 @@ export default function PublicTakeQuizPage() {
     setAnswers((prev) => ({ ...prev, [question.id]: value }));
   }
 
+
+  function setEssayAnswerMode(mode: "typed" | "upload") {
+    setEssayAnswerModes((prev) => ({ ...prev, [question.id]: mode }));
+  }
   function handleMathsFile(file: File) {
     if (file.size > 4 * 1024 * 1024) {
       showToast("File too large. Please use an image under 4MB.", "error");
@@ -378,7 +384,7 @@ export default function PublicTakeQuizPage() {
                 className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-black outline-none focus:border-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:focus:border-white"
               />
             )}
-            {isEssay && (
+            {isEssay && essayAnswerMode === "typed" && (
               <textarea
                 rows={6}
                 value={currentAnswer}
@@ -388,9 +394,10 @@ export default function PublicTakeQuizPage() {
               />
             )}
 
-            {isMaths && (
+            {(isMaths || (isEssay && essayAnswerMode === "upload")) && (
               <div className="space-y-3">
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
+            {isEssay && <div className="mb-3 grid gap-2 sm:grid-cols-2"><button type="button" onClick={() => setEssayAnswerMode("typed")} className={`rounded-lg border p-3 text-left text-sm ${essayAnswerMode === "typed" ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black" : "border-zinc-200 text-zinc-700 dark:border-zinc-700 dark:text-zinc-300"}`}><span className="block font-semibold">Option 1: Type your answer</span><span className="mt-1 block text-xs opacity-70">Use the response box above.</span></button><button type="button" onClick={() => setEssayAnswerMode("upload")} className={`rounded-lg border p-3 text-left text-sm ${essayAnswerMode === "upload" ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black" : "border-zinc-200 text-zinc-700 dark:border-zinc-700 dark:text-zinc-300"}`}><span className="block font-semibold">Option 2: Write & upload</span><span className="mt-1 block text-xs opacity-70">Upload handwritten work below.</span></button></div>}
                   Upload an image of your handwritten answer. Ensure your{" "}
                   <span className="font-semibold text-zinc-700 dark:text-zinc-300">final answer is clearly labeled</span>.
                 </p>

@@ -33,6 +33,7 @@ export default function TakeQuizPage() {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [mathsAnswers, setMathsAnswers] = useState<Record<string, MathsAnswer>>({});
+  const [essayAnswerModes, setEssayAnswerModes] = useState<Record<string, "typed" | "upload">>({});
   const mathsFileRef = useRef<HTMLInputElement>(null);
   const [isDragging, setIsDragging] = useState(false);
 
@@ -190,8 +191,9 @@ export default function TakeQuizPage() {
   const currentAnswer = answers[question?.id] ?? "";
   const currentMaths = mathsAnswers[question?.id] ?? { images: [] };
 
+  const essayAnswerMode = essayAnswerModes[question?.id] ?? "typed";
   function isAnswered(qId: string) {
-    if (isMaths) return (mathsAnswers[qId]?.images?.length ?? 0) > 0;
+    if (isMaths || (isEssay && essayAnswerModes[qId] === "upload")) return (mathsAnswers[qId]?.images?.length ?? 0) > 0;
     return (answers[qId] ?? "").trim().length > 0;
   }
 
@@ -199,6 +201,10 @@ export default function TakeQuizPage() {
     setAnswers((prev) => ({ ...prev, [question.id]: value }));
   }
 
+
+  function setEssayAnswerMode(mode: "typed" | "upload") {
+    setEssayAnswerModes((prev) => ({ ...prev, [question.id]: mode }));
+  }
   function handleMathsFile(files: FileList | File[]) {
     const fileArr = Array.from(files);
     const tooBig = fileArr.find(f => f.size > 4 * 1024 * 1024);
@@ -346,9 +352,10 @@ export default function TakeQuizPage() {
         )}
 
         {isSubjective && <input type="text" value={currentAnswer} onChange={(e) => handleAnswer(e.target.value)} placeholder="Type your answer…" className="w-full rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-black outline-none focus:border-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:focus:border-white" />}
+        {isEssay && <div className="mb-3 grid gap-2 sm:grid-cols-2"><button type="button" onClick={() => setEssayAnswerMode("typed")} className={`rounded-lg border p-3 text-left text-sm ${essayAnswerMode === "typed" ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black" : "border-zinc-200 text-zinc-700 dark:border-zinc-700 dark:text-zinc-300"}`}><span className="block font-semibold">Option 1: Type your answer</span><span className="mt-1 block text-xs opacity-70">Use the response box below.</span></button><button type="button" onClick={() => setEssayAnswerMode("upload")} className={`rounded-lg border p-3 text-left text-sm ${essayAnswerMode === "upload" ? "border-black bg-black text-white dark:border-white dark:bg-white dark:text-black" : "border-zinc-200 text-zinc-700 dark:border-zinc-700 dark:text-zinc-300"}`}><span className="block font-semibold">Option 2: Write & upload</span><span className="mt-1 block text-xs opacity-70">Upload handwritten work below.</span></button></div>}
         {isEssay && <textarea rows={6} value={currentAnswer} onChange={(e) => handleAnswer(e.target.value)} placeholder="Write your essay response here…" className="w-full resize-none rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-sm text-black outline-none focus:border-black dark:border-zinc-700 dark:bg-zinc-800 dark:text-white dark:focus:border-white" />}
         
-        {isMaths && (
+        {(isMaths || (isEssay && essayAnswerMode === "upload")) && (
           <div className="space-y-3">
             <p className="text-xs text-zinc-500 dark:text-zinc-400">Upload images of your handwritten answer. Ensure your <span className="font-semibold text-zinc-700 dark:text-zinc-300">final answer is clearly labeled</span>.</p>
             <input type="file" ref={mathsFileRef} onChange={handleMathsFileSelect} className="hidden" accept=".png,.jpg,.jpeg,.webp" multiple />
