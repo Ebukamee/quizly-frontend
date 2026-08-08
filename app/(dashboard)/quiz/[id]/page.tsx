@@ -258,6 +258,7 @@ export default function TakeQuizPage() {
 
       try {
         const formattedAnswers = await Promise.all(quiz.questions.map(async (q: any) => {
+          const isEssayWithUpload = quiz.type === 'THEORY' && essayAnswerModes[q.id] === "upload";
           const mathData = mathsAnswers[q.id];
           const images: { base64: string; mimeType: string }[] = [];
 
@@ -274,7 +275,7 @@ export default function TakeQuizPage() {
           return {
             questionId: q.id,
             questionType: quiz.type,
-            userAnswer: answers[q.id] || "",
+            userAnswer: isEssayWithUpload ? "" : (answers[q.id] || ""),
             maxPoints: quiz.type === 'THEORY' ? 10 : 1,
             // Send first image in legacy fields for backward compat, plus full array
             imageBase64: images[0]?.base64,

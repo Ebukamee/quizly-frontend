@@ -207,18 +207,18 @@ export default function AttemptDetailPage() {
                 <div className="space-y-2">
                   <div className={`rounded-lg px-4 py-3 text-sm ${markRatio >= 0.7 ? "bg-green-50 dark:bg-green-950/40" : "bg-amber-50 dark:bg-amber-950/40"}`}>
                     <p className="mb-1 text-xs font-semibold text-zinc-400">Your response</p>
-                    <p className="leading-relaxed text-zinc-800 dark:text-zinc-200">{userAnswer}</p>
+                    <p className="leading-relaxed text-zinc-800 dark:text-zinc-200"><LatexRenderer text={userAnswer} /></p>
                   </div>
                   {q.keyPoints && (
                     <div className="rounded-lg border border-zinc-100 bg-white px-4 py-3 text-sm dark:border-zinc-800 dark:bg-zinc-800/60">
                       <p className="mb-1 text-xs font-semibold text-zinc-400">Grading Rubric / Key Points</p>
-                      <p className="leading-relaxed text-zinc-600 dark:text-zinc-400">{q.keyPoints}</p>
+                      <p className="leading-relaxed text-zinc-600 dark:text-zinc-400"><LatexRenderer text={q.keyPoints} /></p>
                     </div>
                   )}
                   {explanation && (
                     <div className="rounded-lg border border-zinc-100 bg-zinc-50 px-4 py-3 dark:border-zinc-800 dark:bg-zinc-800">
                       <p className="mb-1 text-xs font-semibold text-zinc-400">AI Feedback</p>
-                      <p className="text-sm text-zinc-600 dark:text-zinc-400">{explanation}</p>
+                      <p className="text-sm text-zinc-600 dark:text-zinc-400"><LatexRenderer text={explanation} /></p>
                     </div>
                   )}
                 </div>
